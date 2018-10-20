@@ -22,7 +22,7 @@ struct thread_data_t {
 
 class Connection {
     public:
-    Connection();
+    Connection(int server_port);
     void init();
     static void *thread_behavior(void *t_data);
     void handle_connection(int connection_desc);
@@ -30,8 +30,8 @@ class Connection {
     void close();
 
     private:
-    const int SERVER_PORT = 1234;
     const int QUEUE_SIZE = 5;
+    int server_port;
     int server_desc;
 };
 

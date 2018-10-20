@@ -2,14 +2,14 @@
 
 namespace sk2 {
 
-Connection::Connection() { }
+Connection::Connection(int server_port) : server_port(server_port) { }
 
 void Connection::init() {
     struct sockaddr_in server_address;
     memset(&server_address, 0, sizeof(struct sockaddr));
     server_address.sin_family = AF_INET;
     server_address.sin_addr.s_addr = htonl(INADDR_ANY);
-    server_address.sin_port = htons(SERVER_PORT);
+    server_address.sin_port = htons(server_port);
 
     server_desc = socket(AF_INET, SOCK_STREAM, 0);
     if (server_desc < 0) {
@@ -70,7 +70,6 @@ void Connection::main_loop() {
 void sk2::Connection::close() {
     ::close(server_desc);
 }
-
 
 
 } // namespace sk2
