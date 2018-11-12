@@ -7,4 +7,4 @@ Autorzy: 132267, 132300
 Serwer został napisany w języku C++.
 
 ##### Klient
-A klient nie.
+Klient zostal napisany w Java.
