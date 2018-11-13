@@ -34,25 +34,30 @@ void Connection::init() {
 
 void *Connection::thread_behavior(void *t_data) {
     pthread_detach(pthread_self());
-    struct thread_data_t *th_data = (struct thread_data_t*)t_data;
-    //TODO transmitting
+
+    int *a = (int*)t_data;
+
+    std::string input = read_input(*a);
+    printf("Wczytano: %s\n", input.c_str());
 
     pthread_exit(NULL);
 }
 
+std::string Connection::read_input(int connection_desc) {
+    memset(buffer, 0, sizeof(buffer));
+    read(connection_desc, buffer, BUFFER_SIZE-1);
+
+    return std::string(buffer);
+}
+
+
 void Connection::handle_connection(int connection_desc) {
-    pthread_t thread1;
-
-    //TODO wypełnienie pól struktury
-    struct thread_data_t t_data;
-
-    int create_result = pthread_create(&thread1, NULL, &Connection::thread_behavior, (void *)&t_data);
+    pthread_t child;
+    int create_result = pthread_create(&child, NULL, &Connection::thread_behavior, (void *)&connection_desc);
     if (create_result) {
        printf("Błąd przy próbie utworzenia wątku, kod błędu: %d\n", create_result);
        exit(-1);
     }
-
-    //TODO (przy zadaniu 1) odbieranie -> wyświetlanie albo klawiatura -> wysyłanie
 }
 
 void Connection::main_loop() {

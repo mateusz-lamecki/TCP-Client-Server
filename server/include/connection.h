@@ -17,14 +17,15 @@
 
 namespace sk2 {
 
-struct thread_data_t {
-};
+const int BUFFER_SIZE = 4096;
+char buffer[BUFFER_SIZE];
 
 class Connection {
     public:
     Connection(int server_port);
     void init();
-    static void *thread_behavior(void *t_data);
+    void *thread_behavior(void *t_data);
+    std::string read_input(int connection_desc);
     void handle_connection(int connection_desc);
     void main_loop();
     void close();
