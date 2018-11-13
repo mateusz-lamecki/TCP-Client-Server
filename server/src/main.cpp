@@ -1,8 +1,8 @@
 #include <iostream>
-#include "connection.h"
+#include "serverservice.h"
 
 int main(int argc, char* argv[]) {
-    sk2::Connection connection(3552);
+    sk2::ServerService connection(3552);
     connection.init();
     connection.main_loop();
 

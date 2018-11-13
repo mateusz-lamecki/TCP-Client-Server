@@ -17,15 +17,20 @@
 
 namespace sk2 {
 
-const int BUFFER_SIZE = 4096;
-char buffer[BUFFER_SIZE];
+namespace input {
 
-class Connection {
+const int BUFFER_SIZE = 4096;
+
+std::string read_input(int connection_desc);
+
+} // namespace input
+
+
+class ServerService {
     public:
-    Connection(int server_port);
+    ServerService(int server_port);
     void init();
-    void *thread_behavior(void *t_data);
-    std::string read_input(int connection_desc);
+    static void *thread_behavior(void *t_data);
     void handle_connection(int connection_desc);
     void main_loop();
     void close();
