@@ -1,5 +1,9 @@
 #include "utils.h"
 
+namespace sk2 {
+
+namespace utils {
+
 std::vector<std::string> split_string(std::string x, char delimiter) {
     std::vector<std::string> words;
 
@@ -16,3 +20,7 @@ std::vector<std::string> split_string(std::string x, char delimiter) {
     if(!tmp.empty()) words.push_back(tmp);
     return words;
 }
+
+} // namespace utils
+
+} // namespace sk2

@@ -20,27 +20,11 @@ enum class Status {
 class Request {
     public:
     Request(std::string raw_content);
+    Action detect_action();
 
     protected:
     std::string raw_content;
-};
-
-class LoginRequest : public Request {
-};
-
-class RegisterRequest : public Request {
-};
-
-class PublishRequest : public Request {
-};
-
-class SubscribeRequest : public Request {
-};
-
-class UnsubscribeRequest : public Request {
-};
-
-class ReadRequest : public Request {
+    Action action;
 };
 
 
