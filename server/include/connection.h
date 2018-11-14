@@ -5,6 +5,7 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
+#include <memory>
 #include <unistd.h>
 #include <netdb.h>
 #include <csignal>
@@ -15,24 +16,25 @@
 #include <ctime>
 #include <pthread.h>
 
+#include "system_service.h"
+
+
 namespace sk2 {
 
 namespace input {
 
 const int BUFFER_SIZE = 4096;
-
 std::string read_input(int connection_desc);
 
 } // namespace input
 
 
-class ServerService {
+class Connection {
     public:
-    ServerService(int server_port);
-    void init();
+    Connection(int server_port);
     static void *thread_behavior(void *t_data);
     void handle_connection(int connection_desc);
-    void main_loop();
+    void run(std::shared_ptr<SystemService> system_service);
     void close();
 
     private:

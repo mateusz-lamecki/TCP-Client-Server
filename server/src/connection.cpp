@@ -1,8 +1,10 @@
-#include "serverservice.h"
+#include "connection.h"
+
 
 namespace sk2 {
 
 namespace input {
+
 std::string read_input(int connection_desc) {
     char *buffer = new char[BUFFER_SIZE];
     memset(buffer, 0, BUFFER_SIZE);
@@ -14,13 +16,11 @@ std::string read_input(int connection_desc) {
 
     return result;
 }
+
 } // namespace input
 
 
-
-ServerService::ServerService(int server_port) : server_port(server_port) { }
-
-void ServerService::init() {
+Connection::Connection(int server_port) : server_port(server_port) {
     struct sockaddr_in server_address;
     memset(&server_address, 0, sizeof(struct sockaddr));
     server_address.sin_family = AF_INET;
@@ -48,7 +48,7 @@ void ServerService::init() {
     }
 }
 
-void *ServerService::thread_behavior(void *t_data) {
+void *Connection::thread_behavior(void *t_data) {
     pthread_detach(pthread_self());
 
     int *a = (int*)t_data;
@@ -60,16 +60,16 @@ void *ServerService::thread_behavior(void *t_data) {
 }
 
 
-void ServerService::handle_connection(int connection_desc) {
+void Connection::handle_connection(int connection_desc) {
     pthread_t child;
-    int create_result = pthread_create(&child, NULL, &ServerService::thread_behavior, (void *)&connection_desc);
+    int create_result = pthread_create(&child, NULL, &Connection::thread_behavior, (void *)&connection_desc);
     if (create_result) {
        printf("Błąd przy próbie utworzenia wątku, kod błędu: %d\n", create_result);
        exit(-1);
     }
 }
 
-void ServerService::main_loop() {
+void Connection::run(std::shared_ptr<SystemService> system_service) {
     while(true) {
         int connection_desc = accept(server_desc, NULL, NULL);
         if (connection_desc < 0) {
@@ -81,7 +81,7 @@ void ServerService::main_loop() {
     }
 }
 
-void sk2::ServerService::close() {
+void sk2::Connection::close() {
     ::close(server_desc);
 }
 
