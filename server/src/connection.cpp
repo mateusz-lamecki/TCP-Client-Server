@@ -72,9 +72,8 @@ void Connection::handle_client(int client_fd) {
         }
 
         printf("Wczytano od %d: %s\n", client_fd, input.c_str());
-        request::Action action_type = request::detect_action(input);
-        auto type2 = static_cast<std::underlying_type<request::Action>::type>(action_type);
-        printf("TYP: %d\n\n", type2);
+        std::unique_ptr<request::Action> action_type = request::Action::detect_action(input);
+        printf("TYP: %s\n\n", action_type->to_string().c_str());
     }
 }
 
