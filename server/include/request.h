@@ -24,7 +24,6 @@ class Request {
 
     protected:
     std::string raw_content;
-    Action action;
 };
 
 

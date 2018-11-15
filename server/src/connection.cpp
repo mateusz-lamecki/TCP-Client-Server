@@ -7,10 +7,11 @@ namespace input {
 
 std::string read_input(int connection_desc) {
     char *buffer = new char[BUFFER_SIZE];
-    memset(buffer, 0, BUFFER_SIZE);
-    read(connection_desc, buffer, BUFFER_SIZE-1);
+    memset(buffer, 0, sizeof(char)*BUFFER_SIZE);
+    read(connection_desc, buffer, sizeof(char)*BUFFER_SIZE);
 
     std::string result(buffer);
+    printf("%s\n", buffer);
 
     delete[] buffer;
 
@@ -51,10 +52,16 @@ Connection::Connection(int server_port) : server_port(server_port) {
 void *Connection::thread_behavior(void *t_data) {
     pthread_detach(pthread_self());
 
-    int *a = (int*)t_data;
+    int client_fd = *((int*)t_data);
 
-    std::string input = input::read_input(*a);
-    printf("Wczytano: %s\n", input.c_str());
+    while(true) {
+        std::string input = input::read_input(client_fd);
+        if(input.empty()) break;
+        printf("Wczytano od %d: %s\n", client_fd, input.c_str());
+        auto type = request::Request(input).detect_action();
+        auto type2 = static_cast<std::underlying_type<request::Action>::type>(type);
+        printf("TYP: %d\n\n", type2);
+    }
 
     pthread_exit(NULL);
 }
