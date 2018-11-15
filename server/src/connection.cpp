@@ -1,5 +1,7 @@
 #include "connection.h"
 
+#include <iostream>
+
 
 namespace sk2 {
 
@@ -21,7 +23,7 @@ std::string read_input(int connection_desc) {
 } // namespace input
 
 
-Connection::Connection(int server_port) : server_port(server_port) {
+Connection::Connection(int server_port, std::shared_ptr<SystemService> system_service) : server_port(server_port), system_service(system_service) {
     struct sockaddr_in server_address;
     memset(&server_address, 0, sizeof(struct sockaddr));
     server_address.sin_family = AF_INET;
@@ -49,34 +51,35 @@ Connection::Connection(int server_port) : server_port(server_port) {
     }
 }
 
-void *Connection::thread_behavior(void *t_data) {
+void *Connection::wrap_pthread_create(void *content) {
     pthread_detach(pthread_self());
 
-    int client_fd = *((int*)t_data);
-
-    while(true) {
-        std::string input = input::read_input(client_fd);
-        if(input.empty()) break;
-        printf("Wczytano od %d: %s\n", client_fd, input.c_str());
-        auto type = request::Request(input).detect_action();
-        auto type2 = static_cast<std::underlying_type<request::Action>::type>(type);
-        printf("TYP: %d\n\n", type2);
-    }
+    ThreadContent *thread_content = (ThreadContent*)content;
+    thread_content->connection->handle_client(thread_content->client_fd);
 
     pthread_exit(NULL);
 }
 
+void Connection::handle_client(int client_fd) {
+    /* This function is called once during thread initiation */
 
-void Connection::handle_connection(int connection_desc) {
-    pthread_t child;
-    int create_result = pthread_create(&child, NULL, &Connection::thread_behavior, (void *)&connection_desc);
-    if (create_result) {
-       printf("Błąd przy próbie utworzenia wątku, kod błędu: %d\n", create_result);
-       exit(-1);
+    while(true) {
+        std::string input = input::read_input(client_fd);
+        if(input.empty()) {
+            /* connection lost */
+            std::cout << "Connection lost with client #" << client_fd << std::endl;
+            return;
+        }
+
+        printf("Wczytano od %d: %s\n", client_fd, input.c_str());
+        request::Action action_type = request::detect_action(input);
+        auto type2 = static_cast<std::underlying_type<request::Action>::type>(action_type);
+        printf("TYP: %d\n\n", type2);
     }
 }
 
-void Connection::run(std::shared_ptr<SystemService> system_service) {
+
+void Connection::run() {
     while(true) {
         int connection_desc = accept(server_desc, NULL, NULL);
         if (connection_desc < 0) {
@@ -84,7 +87,13 @@ void Connection::run(std::shared_ptr<SystemService> system_service) {
             exit(1);
         }
 
-        handle_connection(connection_desc);
+        pthread_t child;
+        ThreadContent thread_content { connection_desc, this };
+        int create_result = pthread_create(&child, NULL, &Connection::wrap_pthread_create, (void *)&thread_content);
+        if (create_result) {
+           printf("Błąd przy próbie utworzenia wątku, kod błędu: %d\n", create_result);
+           exit(-1);
+        }
     }
 }
 

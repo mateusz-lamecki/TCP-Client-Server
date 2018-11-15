@@ -31,16 +31,23 @@ std::string read_input(int connection_desc);
 
 class Connection {
     public:
-    Connection(int server_port);
-    static void *thread_behavior(void *t_data);
-    void handle_connection(int connection_desc);
-    void run(std::shared_ptr<SystemService> system_service);
+    Connection(int server_port, std::shared_ptr<SystemService> system_service);
+    static void *wrap_pthread_create(void *content);
+    static void handle_client(int client_fd);
+    void run();
     void close();
 
     private:
     const int QUEUE_SIZE = 5;
     int server_port;
     int server_desc;
+
+    std::shared_ptr<SystemService> system_service;
+};
+
+struct ThreadContent {
+    int client_fd;
+    Connection* connection;
 };
 
 } // namespace sk2

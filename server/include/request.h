@@ -17,14 +17,17 @@ enum class Status {
     INVALID_TOKEN, INVALID_TOPIC
 };
 
-class Request {
+class Response {
     public:
-    Request(std::string raw_content);
-    Action detect_action();
+    Response(Status status, std::string auxilary_out="");
+    std::string to_string();
 
-    protected:
-    std::string raw_content;
+    private:
+    Status status;
+    std::string auxilary_out;
 };
+
+Action detect_action(std::string raw_content);
 
 
 } // namespace request

@@ -11,10 +11,10 @@ namespace sk2 {
 
 class SystemService {
     public:
-    void handle_request(std::string request);
+    request::Response login_user(std::string login, std::string password);
+    request::Response register_user(std::string login, std::string password);
 
     private:
-    request::Request* detect_request(std::string request);
     std::vector<resources::Topic> topics;
     std::vector<resources::User> users;
 };

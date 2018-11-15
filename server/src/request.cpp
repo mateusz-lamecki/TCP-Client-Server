@@ -5,9 +5,7 @@ namespace sk2 {
 
 namespace request {
 
-Request::Request(std::string raw_content) : raw_content(raw_content) { }
-
-Action Request::detect_action() {
+Action detect_action(std::string raw_content) {
     auto words = utils::split_string(raw_content, ' ');
     if(words[0] == "LOGIN") return Action::LOGIN;
     else if(words[0] == "REGISTER") return Action::REGISTER;
