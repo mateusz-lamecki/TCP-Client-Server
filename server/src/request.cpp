@@ -50,7 +50,7 @@ std::unique_ptr<Status> Status::detect_status(std::string raw_status) {
 }
 
 
-Response::Response(std::unique_ptr<Status> status, std::string auxilary_out) {
+Response::Response(std::unique_ptr<Status> status, std::string auxilary_out="") {
     this->status_str = status->to_string();
     this->auxilary_out = auxilary_out;
 }

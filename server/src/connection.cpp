@@ -13,8 +13,6 @@ std::string read_input(int connection_desc) {
     read(connection_desc, buffer, sizeof(char)*BUFFER_SIZE);
 
     std::string result(buffer);
-    printf("%s\n", buffer);
-
     delete[] buffer;
 
     return result;
@@ -71,9 +69,9 @@ void Connection::handle_client(int client_fd) {
             return;
         }
 
-        printf("Wczytano od %d: %s\n", client_fd, input.c_str());
-        std::unique_ptr<request::Action> action_type = request::Action::detect_action(input);
-        printf("TYP: %s\n\n", action_type->to_string().c_str());
+        request::Response response = system_service->handle_request(input);
+        std::string response_str = response.to_string();
+        write(client_fd, response_str.c_str(), sizeof(char)*response_str.size());
     }
 }
 

@@ -33,7 +33,7 @@ class Connection {
     public:
     Connection(int server_port, std::shared_ptr<SystemService> system_service);
     static void *wrap_pthread_create(void *content);
-    static void handle_client(int client_fd);
+    void handle_client(int client_fd);
     void run();
     void close();
 
