@@ -13,36 +13,44 @@ std::string UnsubscribeAction::to_string() { return "UNSUBSCRIBE"; }
 std::string ReadAction::to_string() { return "READ"; }
 std::string InvalidAction::to_string() { return "INVALID"; }
 
+int LoginAction::get_n_params() { return 2; }
+int RegisterAction::get_n_params() { return 2; }
+int PublishAction::get_n_params() { return 3; }
+int SubscribeAction::get_n_params() { return 2; }
+int UnsubscribeAction::get_n_params() { return 2; }
+int ReadAction::get_n_params() { return 1; }
+int InvalidAction::get_n_params() { return 0; }
+
 std::string OkStatus::to_string() { return "OK"; }
 std::string InvalidPasswordStatus::to_string() { return "INVALID_PASSWORD"; }
 std::string LoginTakenStatus::to_string() { return "LOGIN_TAKEN"; }
 std::string InvalidTokenStatus::to_string() { return "INVALID_TOKEN"; }
 std::string InvalidTopicStatus::to_string() { return "INVALID_TOPIC"; }
+std::string OtherErrorStatus::to_string() { return "OTHER_INVALID_STATUS"; }
 
 
-std::unique_ptr<Action> Action::detect_action(std::string raw_content) {
-    auto words = utils::split_string(raw_content, ' ');
-    if(words[0] == "LOGIN") return std::unique_ptr<Action>{ new LoginAction() };
-    else if(words[0] == "REGISTER")  return std::unique_ptr<Action>{ new RegisterAction() };
-    else if(words[0] == "PUBLISH")  return std::unique_ptr<Action>{ new PublishAction() };
-    else if(words[0] == "SUBSCRIBE")  return std::unique_ptr<Action>{ new SubscribeAction() };
-    else if(words[0] == "UNSUBSCRIBE")  return std::unique_ptr<Action>{ new UnsubscribeAction() };
-    else if(words[0] == "READ")  return std::unique_ptr<Action>{ new ReadAction() };
+std::unique_ptr<Action> Action::detect_action(std::string raw_action) {
+    if(raw_action == "LOGIN") return std::unique_ptr<Action>{ new LoginAction() };
+    else if(raw_action == "REGISTER")  return std::unique_ptr<Action>{ new RegisterAction() };
+    else if(raw_action == "PUBLISH")  return std::unique_ptr<Action>{ new PublishAction() };
+    else if(raw_action == "SUBSCRIBE")  return std::unique_ptr<Action>{ new SubscribeAction() };
+    else if(raw_action == "UNSUBSCRIBE")  return std::unique_ptr<Action>{ new UnsubscribeAction() };
+    else if(raw_action == "READ")  return std::unique_ptr<Action>{ new ReadAction() };
     return std::unique_ptr<Action>{ new InvalidAction() };
 }
 
-std::unique_ptr<Status> Status::detect_status(std::string raw_content) {
-    auto words = utils::split_string(raw_content, ' ');
-    if(words[0] == "OK") return std::unique_ptr<Status>{ new OkStatus() };
-    else if(words[0] == "INVALID_PASSWORD")  return std::unique_ptr<Status>{ new InvalidPasswordStatus() };
-    else if(words[0] == "LOGIN_TAKEN")  return std::unique_ptr<Status>{ new LoginTakenStatus() };
-    else if(words[0] == "INVALID_TOKEN")  return std::unique_ptr<Status>{ new InvalidTokenStatus() };
-    else if(words[0] == "INVALID_TOPIC")  return std::unique_ptr<Status>{ new InvalidTopicStatus() };
+std::unique_ptr<Status> Status::detect_status(std::string raw_status) {
+    if(raw_status == "OK") return std::unique_ptr<Status>{ new OkStatus() };
+    else if(raw_status == "INVALID_PASSWORD")  return std::unique_ptr<Status>{ new InvalidPasswordStatus() };
+    else if(raw_status == "LOGIN_TAKEN")  return std::unique_ptr<Status>{ new LoginTakenStatus() };
+    else if(raw_status == "INVALID_TOKEN")  return std::unique_ptr<Status>{ new InvalidTokenStatus() };
+    else if(raw_status == "INVALID_TOPIC")  return std::unique_ptr<Status>{ new InvalidTopicStatus() };
+    else if(raw_status == "OTHER_ERROR")  return std::unique_ptr<Status>{ new OtherErrorStatus() };
     else return nullptr;
 }
 
 
-Response::Response(std::unique_ptr<Status> status, std::string auxilary_out="") {
+Response::Response(std::unique_ptr<Status> status, std::string auxilary_out) {
     this->status_str = status->to_string();
     this->auxilary_out = auxilary_out;
 }
