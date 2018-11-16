@@ -13,6 +13,7 @@ static const std::string DELIMITER = "@@@";
 class Action {
     public:
     static std::unique_ptr<Action> detect_action(std::string raw_action);
+    virtual int get_n_params() = 0;
     virtual std::string to_string() = 0;
 };
 
@@ -26,43 +27,50 @@ class Status {
 
 class LoginAction : public Action {
     public:
-    static const int N_PARAMS = 2;
+    const int N_PARAMS = 2;
+    int get_n_params() override;
     std::string to_string() override;
 };
 
 class RegisterAction : public Action {
     public:
-    static const int N_PARAMS = 2;
+    const int N_PARAMS = 2;
+    int get_n_params() override;
     std::string to_string() override;
 };
 
 class PublishAction : public Action {
     public:
-    static const int N_PARAMS = 3;
+    const int N_PARAMS = 3;
+    int get_n_params() override;
     std::string to_string() override;
 };
 
 class SubscribeAction : public Action {
     public:
-    static const int N_PARAMS = 2;
+    const int N_PARAMS = 2;
+    int get_n_params() override;
     std::string to_string() override;
 };
 
 class UnsubscribeAction : public Action {
     public:
-    static const int N_PARAMS = 2;
+    const int N_PARAMS = 2;
+    int get_n_params() override;
     std::string to_string() override;
 };
 
 class ReadAction : public Action {
     public:
-    static const int N_PARAMS = 1;
+    const int N_PARAMS = 1;
+    int get_n_params() override;
     std::string to_string() override;
 };
 
 class InvalidAction : public Action {
     public:
     std::string to_string() override;
+    int get_n_params() override;
 };
 
 
