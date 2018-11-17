@@ -27,6 +27,11 @@ class User {
     std::string token;
 };
 
+struct Resources {
+    std::vector<Topic> topic;
+    std::vector<User> users;
+};
+
 } // namespace resources
 
 } // namespace sk2
