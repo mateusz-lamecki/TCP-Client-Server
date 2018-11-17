@@ -6,32 +6,39 @@ namespace sk2 {
 namespace request {
 
 
-void LoginAction::handle_action(std::string request_raw, resources::Resources& res) {
+std::unique_ptr<Status> LoginAction::handle(std::string request_raw, resources::Resources& res) {
     // TODO;
+    return nullptr;
 }
 
-void RegisterAction::handle_action(std::string request_raw, resources::Resources& res) {
+std::unique_ptr<Status> RegisterAction::handle(std::string request_raw, resources::Resources& res) {
     // TODO;
+    return nullptr;
 }
 
-void PublishAction::handle_action(std::string request_raw, resources::Resources& res) {
+std::unique_ptr<Status> PublishAction::handle(std::string request_raw, resources::Resources& res) {
     // TODO;
+    return nullptr;
 }
 
-void SubscribeAction::handle_action(std::string request_raw, resources::Resources& res) {
+std::unique_ptr<Status> SubscribeAction::handle(std::string request_raw, resources::Resources& res) {
     // TODO;
+    return nullptr;
 }
 
-void UnsubscribeAction::handle_action(std::string request_raw, resources::Resources& res) {
+std::unique_ptr<Status> UnsubscribeAction::handle(std::string request_raw, resources::Resources& res) {
     // TODO;
+    return nullptr;
 }
 
-void ReadAction::handle_action(std::string request_raw, resources::Resources& res) {
+std::unique_ptr<Status> ReadAction::handle(std::string request_raw, resources::Resources& res) {
     // TODO;
+    return nullptr;
 }
 
-void InvalidAction::handle_action(std::string request_raw, resources::Resources& res) {
+std::unique_ptr<Status> InvalidAction::handle(std::string request_raw, resources::Resources& res) {
     // TODO;
+    return nullptr;
 }
 
 
