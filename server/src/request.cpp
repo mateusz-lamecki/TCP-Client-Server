@@ -5,6 +5,36 @@ namespace sk2 {
 
 namespace request {
 
+
+void LoginAction::handle_action(std::string request_raw, resources::Resources& res) {
+    // TODO;
+}
+
+void RegisterAction::handle_action(std::string request_raw, resources::Resources& res) {
+    // TODO;
+}
+
+void PublishAction::handle_action(std::string request_raw, resources::Resources& res) {
+    // TODO;
+}
+
+void SubscribeAction::handle_action(std::string request_raw, resources::Resources& res) {
+    // TODO;
+}
+
+void UnsubscribeAction::handle_action(std::string request_raw, resources::Resources& res) {
+    // TODO;
+}
+
+void ReadAction::handle_action(std::string request_raw, resources::Resources& res) {
+    // TODO;
+}
+
+void InvalidAction::handle_action(std::string request_raw, resources::Resources& res) {
+    // TODO;
+}
+
+
 std::string LoginAction::to_string() { return "LOGIN"; }
 std::string RegisterAction::to_string() { return "REGISTER"; }
 std::string PublishAction::to_string() { return "PUBLISH"; }
