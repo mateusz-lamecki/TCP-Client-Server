@@ -74,8 +74,6 @@ public class ClientController {
     }
 
     private void logOnScene(String logMessage, int seconds) {
-        System.out.println(logMessage);
-        System.out.println(seconds);
         final KeyFrame kf1 = new KeyFrame(Duration.seconds(0), e -> mainStatusBarFx.setText(logMessage));
         final KeyFrame kf2 = new KeyFrame(Duration.seconds(seconds), e -> mainStatusBarFx.setText(""));
         final Timeline timeline = new Timeline(kf1, kf2);
