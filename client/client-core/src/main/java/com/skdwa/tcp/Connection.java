@@ -6,6 +6,8 @@ import java.io.OutputStream;
 public interface Connection {
     void connect() throws IOException;
 
+    void disconnect();
+
     void read(OutputStream outputStream) throws IOException;
 
     void write(String message) throws IOException;
