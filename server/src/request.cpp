@@ -31,7 +31,12 @@ std::unique_ptr<Status> UnsubscribeAction::handle(std::string request_raw, resou
     return nullptr;
 }
 
-std::unique_ptr<Status> ReadAction::handle(std::string request_raw, resources::Resources& res) {
+std::unique_ptr<Status> ReadMessagesAction::handle(std::string request_raw, resources::Resources& res) {
+    // TODO;
+    return nullptr;
+}
+
+std::unique_ptr<Status> ReadTopicsAction::handle(std::string request_raw, resources::Resources& res) {
     // TODO;
     return nullptr;
 }
@@ -47,7 +52,8 @@ std::string RegisterAction::to_string() { return "REGISTER"; }
 std::string PublishAction::to_string() { return "PUBLISH"; }
 std::string SubscribeAction::to_string() { return "SUBSCRIBE"; }
 std::string UnsubscribeAction::to_string() { return "UNSUBSCRIBE"; }
-std::string ReadAction::to_string() { return "READ"; }
+std::string ReadMessagesAction::to_string() { return "READ_MESSAGES"; }
+std::string ReadTopicsAction::to_string() { return "READ_TOPICS"; }
 std::string InvalidAction::to_string() { return "INVALID"; }
 
 int LoginAction::get_n_params() { return 2; }
@@ -55,7 +61,8 @@ int RegisterAction::get_n_params() { return 2; }
 int PublishAction::get_n_params() { return 3; }
 int SubscribeAction::get_n_params() { return 2; }
 int UnsubscribeAction::get_n_params() { return 2; }
-int ReadAction::get_n_params() { return 1; }
+int ReadMessagesAction::get_n_params() { return 1; }
+int ReadTopicsAction::get_n_params() { return 1; }
 int InvalidAction::get_n_params() { return 0; }
 
 std::string OkStatus::to_string() { return "OK"; }
@@ -72,7 +79,8 @@ std::unique_ptr<Action> Action::detect_action(std::string raw_action) {
     else if(raw_action == "PUBLISH")  return std::unique_ptr<Action>{ new PublishAction() };
     else if(raw_action == "SUBSCRIBE")  return std::unique_ptr<Action>{ new SubscribeAction() };
     else if(raw_action == "UNSUBSCRIBE")  return std::unique_ptr<Action>{ new UnsubscribeAction() };
-    else if(raw_action == "READ")  return std::unique_ptr<Action>{ new ReadAction() };
+    else if(raw_action == "READ_MESSAGES")  return std::unique_ptr<Action>{ new ReadMessagesAction() };
+    else if(raw_action == "READ_TOPICS")  return std::unique_ptr<Action>{ new ReadTopicsAction() };
     return std::unique_ptr<Action>{ new InvalidAction() };
 }
 

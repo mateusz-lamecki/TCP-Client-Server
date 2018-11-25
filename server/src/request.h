@@ -69,7 +69,15 @@ class UnsubscribeAction : public Action {
     std::string to_string() override;
 };
 
-class ReadAction : public Action {
+class ReadMessagesAction : public Action {
+    public:
+    const int N_PARAMS = 1;
+    std::unique_ptr<Status> handle(std::string request_raw, resources::Resources& res) override;
+    int get_n_params() override;
+    std::string to_string() override;
+};
+
+class ReadTopicsAction : public Action {
     public:
     const int N_PARAMS = 1;
     std::unique_ptr<Status> handle(std::string request_raw, resources::Resources& res) override;
