@@ -18,6 +18,7 @@ class User {
     public:
     User(std::string login, std::string password);
     std::string generate_token() const;
+    bool pass_matches(std::string password) const;
     bool operator ==(const User &rhs) const;
     bool operator <(const User &rhs) const;
 
@@ -31,6 +32,7 @@ class Resources {
     public:
     Resources();
     std::string get_user_token(std::string login, std::string password);
+    bool register_user(std::string login, std::string password);
     const std::string NON_EXISTING_TOKEN = "KDKFMF-NON-EXISTING-ASDASD";
 
     private:

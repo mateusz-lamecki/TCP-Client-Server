@@ -18,7 +18,13 @@ Response LoginAction::handle(std::string request_raw, resources::Resources& res)
 }
 
 Response RegisterAction::handle(std::string request_raw, resources::Resources& res) {
-    // TODO;
+    auto words = utils::split_string(request_raw, request::DELIMITER);
+    bool success = res.register_user(words[1], words[2]);
+    if(success) {
+        return Response(std::make_unique<request::OkStatus>());
+    } else {
+        return Response(std::make_unique<request::LoginTakenStatus>());
+    }
 }
 
 Response PublishAction::handle(std::string request_raw, resources::Resources& res) {
