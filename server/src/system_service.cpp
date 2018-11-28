@@ -17,10 +17,8 @@ request::Response SystemService::handle_request(std::string request_raw) {
         return request::Response(std::make_unique<request::OtherErrorStatus>(), "Incorrect number of params");
     }
 
-    auto status_of_action = action->handle(request_raw, this->res);
-
-
-    return request::Response(std::make_unique<request::OkStatus>(), "Everything ok");
+    auto response_of_action = action->handle(request_raw, this->res);
+    return response_of_action;
 
 }
 

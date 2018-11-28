@@ -14,9 +14,6 @@ class SystemService {
     request::Response handle_request(std::string request_raw);
 
     private:
-    request::Response login_user(std::string login, std::string password);
-    request::Response register_user(std::string login, std::string password);
-
     resources::Resources res;
 };
 

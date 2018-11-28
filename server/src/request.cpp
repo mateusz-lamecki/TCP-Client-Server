@@ -6,44 +6,43 @@ namespace sk2 {
 namespace request {
 
 
-std::unique_ptr<Status> LoginAction::handle(std::string request_raw, resources::Resources& res) {
-    // TODO;
-    return nullptr;
+Response LoginAction::handle(std::string request_raw, resources::Resources& res) {
+    auto words = utils::split_string(request_raw, request::DELIMITER);
+    std::string user_token = res.get_user_token(words[1], words[2]);
+    if(user_token != res.NON_EXISTING_TOKEN) {
+        return Response(std::make_unique<request::OkStatus>(), user_token);
+    } else {
+        return Response(std::make_unique<request::InvalidPasswordStatus>());
+    }
+
 }
 
-std::unique_ptr<Status> RegisterAction::handle(std::string request_raw, resources::Resources& res) {
+Response RegisterAction::handle(std::string request_raw, resources::Resources& res) {
     // TODO;
-    return nullptr;
 }
 
-std::unique_ptr<Status> PublishAction::handle(std::string request_raw, resources::Resources& res) {
+Response PublishAction::handle(std::string request_raw, resources::Resources& res) {
     // TODO;
-    return nullptr;
 }
 
-std::unique_ptr<Status> SubscribeAction::handle(std::string request_raw, resources::Resources& res) {
+Response SubscribeAction::handle(std::string request_raw, resources::Resources& res) {
     // TODO;
-    return nullptr;
 }
 
-std::unique_ptr<Status> UnsubscribeAction::handle(std::string request_raw, resources::Resources& res) {
+Response UnsubscribeAction::handle(std::string request_raw, resources::Resources& res) {
     // TODO;
-    return nullptr;
 }
 
-std::unique_ptr<Status> ReadMessagesAction::handle(std::string request_raw, resources::Resources& res) {
+Response ReadMessagesAction::handle(std::string request_raw, resources::Resources& res) {
     // TODO;
-    return nullptr;
 }
 
-std::unique_ptr<Status> ReadTopicsAction::handle(std::string request_raw, resources::Resources& res) {
+Response ReadTopicsAction::handle(std::string request_raw, resources::Resources& res) {
     // TODO;
-    return nullptr;
 }
 
-std::unique_ptr<Status> InvalidAction::handle(std::string request_raw, resources::Resources& res) {
+Response InvalidAction::handle(std::string request_raw, resources::Resources& res) {
     // TODO;
-    return nullptr;
 }
 
 
@@ -91,11 +90,10 @@ std::unique_ptr<Status> Status::detect_status(std::string raw_status) {
     else if(raw_status == "INVALID_TOKEN")  return std::unique_ptr<Status>{ new InvalidTokenStatus() };
     else if(raw_status == "INVALID_TOPIC")  return std::unique_ptr<Status>{ new InvalidTopicStatus() };
     else if(raw_status == "OTHER_ERROR")  return std::unique_ptr<Status>{ new OtherErrorStatus() };
-    else return nullptr;
 }
 
 
-Response::Response(std::unique_ptr<Status> status, std::string auxilary_out="") {
+Response::Response(std::unique_ptr<Status> status, std::string auxilary_out) {
     this->status_str = status->to_string();
     this->auxilary_out = auxilary_out;
 }
