@@ -28,7 +28,15 @@ Response RegisterAction::handle(std::string request_raw, resources::Resources& r
 }
 
 Response PublishAction::handle(std::string request_raw, resources::Resources& res) {
-    // TODO;
+    auto words = utils::split_string(request_raw, request::DELIMITER);
+    
+    auto user_token = res.get_user(words[1]);
+    if(user_token.has_value()) {
+        res.publish_message(words[2], words[3]);
+        return Response(std::make_unique<request::OkStatus>());
+    } else {
+        return Response(std::make_unique<request::InvalidTokenStatus>());
+    }
 }
 
 Response SubscribeAction::handle(std::string request_raw, resources::Resources& res) {
