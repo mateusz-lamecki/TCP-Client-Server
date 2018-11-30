@@ -39,6 +39,13 @@ void User::subscribe(std::string topic_id) {
     topics_subscribed.insert(topic_id);
 }
 
+void User::unsubscribe(std::string topic_id) {
+    auto it = topics_subscribed.find(topic_id);
+    if(it != topics_subscribed.end()) {
+        topics_subscribed.erase(it);
+    }
+}
+
 bool User::operator ==(const User &rhs) const {
     return login == rhs.login;
 }

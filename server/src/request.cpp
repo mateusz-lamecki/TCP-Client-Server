@@ -61,7 +61,21 @@ Response SubscribeAction::handle(std::string request_raw, resources::Resources& 
 }
 
 Response UnsubscribeAction::handle(std::string request_raw, resources::Resources& res) {
-    // TODO;
+    auto words = utils::split_string(request_raw, request::DELIMITER);
+    
+    auto user = res.get_user(words[1]);
+    // Check whether provided user exists
+    if(!user.has_value()) {
+        return Response(std::make_unique<request::InvalidTokenStatus>());
+    }
+
+    // Check whether provided topic exists
+    if(!res.is_topic(words[2])) {
+        return Response(std::make_unique<request::InvalidTopicStatus>());
+    }
+
+    user.value().unsubscribe(words[2]);
+    return Response(std::make_unique<request::OkStatus>());
 }
 
 Response ReadMessagesAction::handle(std::string request_raw, resources::Resources& res) {

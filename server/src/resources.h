@@ -29,6 +29,7 @@ class User {
     std::string get_token() const;
     bool pass_matches(std::string password) const;
     void subscribe(std::string topic_id);
+    void unsubscribe(std::string topic_id);
     bool operator ==(const User &rhs) const;
     bool operator <(const User &rhs) const;
 
