@@ -35,6 +35,10 @@ bool User::pass_matches(std::string password) const {
     return password == this->password;
 }
 
+void User::subscribe(std::string topic_id) {
+    topics_subscribed.insert(topic_id);
+}
+
 bool User::operator ==(const User &rhs) const {
     return login == rhs.login;
 }
@@ -78,6 +82,10 @@ void Resources::publish_message(std::string topic_id, std::string message) {
     }
 
     topics[topic_id].add_message(message);
+}
+
+bool Resources::is_topic(std::string topic_id) {
+    return topics.find(topic_id) != topics.end();
 }
 
 } // namespace resources

@@ -19,7 +19,9 @@ Response LoginAction::handle(std::string request_raw, resources::Resources& res)
 
 Response RegisterAction::handle(std::string request_raw, resources::Resources& res) {
     auto words = utils::split_string(request_raw, request::DELIMITER);
+
     bool success = res.register_user(words[1], words[2]);
+    // Check wherher provided login is not already used
     if(success) {
         return Response(std::make_unique<request::OkStatus>());
     } else {
@@ -30,8 +32,9 @@ Response RegisterAction::handle(std::string request_raw, resources::Resources& r
 Response PublishAction::handle(std::string request_raw, resources::Resources& res) {
     auto words = utils::split_string(request_raw, request::DELIMITER);
     
-    auto user_token = res.get_user(words[1]);
-    if(user_token.has_value()) {
+    auto user = res.get_user(words[1]);
+    // Check whether provided user exists
+    if(user.has_value()) {
         res.publish_message(words[2], words[3]);
         return Response(std::make_unique<request::OkStatus>());
     } else {
@@ -40,7 +43,21 @@ Response PublishAction::handle(std::string request_raw, resources::Resources& re
 }
 
 Response SubscribeAction::handle(std::string request_raw, resources::Resources& res) {
-    // TODO;
+    auto words = utils::split_string(request_raw, request::DELIMITER);
+    
+    auto user = res.get_user(words[1]);
+    // Check whether provided user exists
+    if(!user.has_value()) {
+        return Response(std::make_unique<request::InvalidTokenStatus>());
+    }
+
+    // Check whether provided topic exists
+    if(!res.is_topic(words[2])) {
+        return Response(std::make_unique<request::InvalidTopicStatus>());
+    }
+
+    user.value().subscribe(words[2]);
+    return Response(std::make_unique<request::OkStatus>());
 }
 
 Response UnsubscribeAction::handle(std::string request_raw, resources::Resources& res) {
