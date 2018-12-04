@@ -6,5 +6,10 @@ Autorzy: 132267, 132300
 ##### Serwer
 Serwer został napisany w języku C++.
 
+```
+make
+./server
+```
+
 ##### Klient
 A klient nie.
