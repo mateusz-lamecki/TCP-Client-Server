@@ -79,7 +79,15 @@ Response UnsubscribeAction::handle(std::string request_raw, resources::Resources
 }
 
 Response ReadMessagesAction::handle(std::string request_raw, resources::Resources& res) {
-    // TODO;
+    auto words = utils::split_string(request_raw, request::DELIMITER);
+
+    auto topic = res.get_topic(words[1]);
+    if(!topic.has_value()) {
+        return Response(std::make_unique<request::InvalidTopicStatus>());
+    }
+
+    std::string messages_in_topic = topic.value().messages_to_str(request::DELIMITER2);
+    return Response(std::make_unique<request::OkStatus>(), messages_in_topic);
 }
 
 Response ReadTopicsAction::handle(std::string request_raw, resources::Resources& res) {

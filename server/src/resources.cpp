@@ -13,6 +13,19 @@ void Topic::add_message(std::string message) {
     messages.push_back(message);
 }
 
+std::string Topic::messages_to_str(std::string delimiter) {
+    std::string result;
+
+    bool first = true;
+    for(const std::string &message: messages) {
+        if(!first) result += delimiter;
+        first = false;
+        result += message;
+    }
+
+    return result;
+}
+
 bool Topic::operator ==(const Topic &rhs) const {
     return name == rhs.name;
 }
@@ -89,6 +102,11 @@ void Resources::publish_message(std::string topic_id, std::string message) {
     }
 
     topics[topic_id].add_message(message);
+}
+
+std::optional<Topic> Resources::get_topic(std::string topic_id) {
+    if(topics.find(topic_id) != topics.end()) return topics[topic_id];
+    return std::nullopt;
 }
 
 bool Resources::is_topic(std::string topic_id) {

@@ -15,6 +15,7 @@ class Topic {
     public:
     Topic(std::string name);
     void add_message(std::string message);
+    std::string messages_to_str(std::string delimiter);
     bool operator ==(const Topic &rhs) const;
     bool operator <(const Topic &rhs) const;
 
@@ -47,6 +48,7 @@ class Resources {
     bool register_user(std::string login, std::string password);
 
     void publish_message(std::string topic_id, std::string message);
+    std::optional<Topic> get_topic(std::string topic_id);
     bool is_topic(std::string topic_id);
 
     const std::string NON_EXISTING_TOKEN = "KDKFMF-NON-EXISTING-ASDASD";

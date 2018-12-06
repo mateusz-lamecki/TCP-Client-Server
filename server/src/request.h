@@ -11,6 +11,7 @@ namespace sk2 {
 namespace request {
 
 static const std::string DELIMITER = "@@@";
+static const std::string DELIMITER2 = "$$$";
 
 
 class Status {
