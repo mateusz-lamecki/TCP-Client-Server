@@ -9,7 +9,7 @@ namespace sk2 {
 namespace utils {
 
 std::vector<std::string> split_string(std::string x, std::string delimiter);
-std::vector<std::string> extract_params(std::string x);
+std::string vector_to_str(const std::vector<std::string> messages, std::string delimiter);
 
 } // namespace utils
 

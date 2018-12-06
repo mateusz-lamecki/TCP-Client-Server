@@ -1,6 +1,7 @@
 #pragma once
 
 #include <optional>
+#include <memory>
 #include <string>
 #include <vector>
 #include <map>
@@ -28,9 +29,9 @@ class User {
     public:
     User(std::string login, std::string password);
     std::string get_token() const;
+    std::string topics_subscribed_to_str(std::string delimiter);
     bool pass_matches(std::string password) const;
-    void subscribe(std::string topic_id);
-    void unsubscribe(std::string topic_id);
+    std::set<std::string>& get_topics_subscribed();
     bool operator ==(const User &rhs) const;
     bool operator <(const User &rhs) const;
 
@@ -46,6 +47,10 @@ class Resources {
     std::string get_user_token(std::string login, std::string password);
     std::optional<User> get_user(std::string token);
     bool register_user(std::string login, std::string password);
+    void subscribe_topic(std::string token, std::string topic_id);
+    void unsubscribe_topic(std::string token, std::string topic_id);
+    void subscribe(std::string token, std::string topic_id);
+    void unsubscribe(std::string token, std::string topic_id);
 
     void publish_message(std::string topic_id, std::string message);
     std::optional<Topic> get_topic(std::string topic_id);

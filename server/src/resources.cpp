@@ -1,5 +1,7 @@
 #include "resources.h"
 
+#include "utils.h"
+
 
 namespace sk2 {
 
@@ -14,16 +16,7 @@ void Topic::add_message(std::string message) {
 }
 
 std::string Topic::messages_to_str(std::string delimiter) {
-    std::string result;
-
-    bool first = true;
-    for(const std::string &message: messages) {
-        if(!first) result += delimiter;
-        first = false;
-        result += message;
-    }
-
-    return result;
+    return utils::vector_to_str(messages, delimiter);
 }
 
 bool Topic::operator ==(const Topic &rhs) const {
@@ -44,19 +37,18 @@ std::string User::get_token() const {
     return login;
 }
 
+std::string User::topics_subscribed_to_str(std::string delimiter) {
+    std::vector<std::string> messages(topics_subscribed.size());
+    std::copy(topics_subscribed.begin(), topics_subscribed.end(), messages.begin());
+    return utils::vector_to_str(messages, delimiter);
+}
+
 bool User::pass_matches(std::string password) const {
     return password == this->password;
 }
 
-void User::subscribe(std::string topic_id) {
-    topics_subscribed.insert(topic_id);
-}
-
-void User::unsubscribe(std::string topic_id) {
-    auto it = topics_subscribed.find(topic_id);
-    if(it != topics_subscribed.end()) {
-        topics_subscribed.erase(it);
-    }
+std::set<std::string>& User::get_topics_subscribed() {
+    return topics_subscribed;
 }
 
 bool User::operator ==(const User &rhs) const {
@@ -94,6 +86,17 @@ std::string Resources::get_user_token(std::string login, std::string password) {
 std::optional<User> Resources::get_user(std::string token) {
     if(users.find(token) != users.end()) return users[token];
     return std::nullopt;
+}
+
+void Resources::subscribe_topic(std::string token, std::string topic_id) {
+    users[token].get_topics_subscribed().insert(topic_id);
+}
+
+void Resources::unsubscribe_topic(std::string token, std::string topic_id) {
+    auto it = users[token].get_topics_subscribed().find(topic_id);
+    if(it != users[token].get_topics_subscribed().end()) {
+        users[token].get_topics_subscribed().erase(it);
+    }
 }
 
 void Resources::publish_message(std::string topic_id, std::string message) {

@@ -24,6 +24,19 @@ std::vector<std::string> split_string(std::string x, std::string delimiter) {
     return words;
 }
 
+std::string vector_to_str(const std::vector<std::string> messages, std::string delimiter) {
+    std::string result;
+
+    bool first = true;
+    for(const std::string &message: messages) {
+        if(!first) result += delimiter;
+        first = false;
+        result += message;
+    }
+
+    return result;
+}
+
 
 } // namespace utils
 

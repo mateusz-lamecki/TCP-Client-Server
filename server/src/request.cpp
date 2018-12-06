@@ -1,5 +1,7 @@
 #include "request.h"
+
 #include "utils.h"
+
 
 namespace sk2 {
 
@@ -56,7 +58,7 @@ Response SubscribeAction::handle(std::string request_raw, resources::Resources& 
         return Response(std::make_unique<request::InvalidTopicStatus>());
     }
 
-    user.value().subscribe(words[2]);
+    res.subscribe_topic(words[1], words[2]);
     return Response(std::make_unique<request::OkStatus>());
 }
 
@@ -74,7 +76,7 @@ Response UnsubscribeAction::handle(std::string request_raw, resources::Resources
         return Response(std::make_unique<request::InvalidTopicStatus>());
     }
 
-    user.value().unsubscribe(words[2]);
+    res.unsubscribe_topic(words[1], words[2]);
     return Response(std::make_unique<request::OkStatus>());
 }
 
@@ -91,7 +93,16 @@ Response ReadMessagesAction::handle(std::string request_raw, resources::Resource
 }
 
 Response ReadTopicsAction::handle(std::string request_raw, resources::Resources& res) {
-    // TODO;
+    auto words = utils::split_string(request_raw, request::DELIMITER);
+
+    auto user = res.get_user(words[1]);
+    // Check whether provided user exists
+    if(!user.has_value()) {
+        return Response(std::make_unique<request::InvalidTokenStatus>());
+    }
+
+    std::string subscribed_topics = user.value().topics_subscribed_to_str(request::DELIMITER);
+    return Response(std::make_unique<request::OkStatus>(), subscribed_topics);
 }
 
 Response InvalidAction::handle(std::string request_raw, resources::Resources& res) {
@@ -152,7 +163,7 @@ Response::Response(std::unique_ptr<Status> status, std::string auxilary_out) {
 }
 
 std::string Response::to_string() {
-    return status_str + " " + auxilary_out;
+    return status_str + DELIMITER + auxilary_out;
 }
 
 } // namespace request
