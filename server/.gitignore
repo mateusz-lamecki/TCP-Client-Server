@@ -1,4 +1,8 @@
-bin/*
+# Ignore bianry file
+server
+
+# Ignore object files
+*.o
 
 # Ignore Vim files
 [._]*.s[a-v][a-z]
