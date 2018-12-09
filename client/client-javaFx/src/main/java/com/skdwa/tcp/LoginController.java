@@ -1,20 +1,19 @@
 package com.skdwa.tcp;
 
-import javafx.application.Application;
-import javafx.application.Platform;
 import javafx.event.Event;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
-import javafx.stage.Stage;
 
 import java.io.IOException;
 
 
 public class LoginController {
+    private Session session;
+
+    public LoginController(Session session) {
+        this.session = session;
+    }
+
     @FXML
     private TextField hostFX;
     @FXML
