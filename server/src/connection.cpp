@@ -71,7 +71,7 @@ void Connection::handle_client(int client_fd) {
         }
 
         request::Response response = system_service->handle_request(input);
-        std::string response_str = response.to_string();
+        std::string response_str = response.to_string() std::string("\n");
         write(client_fd, response_str.c_str(), sizeof(char)*response_str.size());
     }
 }
