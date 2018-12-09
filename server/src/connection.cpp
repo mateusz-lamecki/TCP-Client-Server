@@ -1,15 +1,32 @@
 #include "connection.h"
 
+#include <iostream>
+
+
 namespace sk2 {
 
-Connection::Connection() { }
+namespace input {
 
-void Connection::init() {
+std::string read_input(int connection_desc) {
+    char *buffer = new char[BUFFER_SIZE];
+    memset(buffer, 0, sizeof(char)*BUFFER_SIZE);
+    read(connection_desc, buffer, sizeof(char)*BUFFER_SIZE);
+
+    std::string result(buffer);
+    delete[] buffer;
+
+    return result;
+}
+
+} // namespace input
+
+
+Connection::Connection(int server_port, std::shared_ptr<SystemService> system_service) : server_port(server_port), system_service(system_service) {
     struct sockaddr_in server_address;
     memset(&server_address, 0, sizeof(struct sockaddr));
     server_address.sin_family = AF_INET;
     server_address.sin_addr.s_addr = htonl(INADDR_ANY);
-    server_address.sin_port = htons(SERVER_PORT);
+    server_address.sin_port = htons(server_port);
 
     server_desc = socket(AF_INET, SOCK_STREAM, 0);
     if (server_desc < 0) {
@@ -32,30 +49,35 @@ void Connection::init() {
     }
 }
 
-void *Connection::thread_behavior(void *t_data) {
+void *Connection::wrap_pthread_create(void *content) {
     pthread_detach(pthread_self());
-    struct thread_data_t *th_data = (struct thread_data_t*)t_data;
-    //TODO transmitting
+
+    ThreadContent *thread_content = (ThreadContent*)content;
+    thread_content->connection->handle_client(thread_content->client_fd);
 
     pthread_exit(NULL);
 }
 
-void Connection::handle_connection(int connection_desc) {
-    pthread_t thread1;
+void Connection::handle_client(int client_fd) {
+    /* This function is called once during thread initiation */
+    std::cout << "Established connection with client #" << client_fd << std::endl;
 
-    //TODO wypełnienie pól struktury
-    struct thread_data_t t_data;
+    while(true) {
+        std::string input = input::read_input(client_fd);
+        if(input.empty()) {
+            /* connection lost */
+            std::cout << "Lost connection with client #" << client_fd << std::endl;
+            return;
+        }
 
-    int create_result = pthread_create(&thread1, NULL, &Connection::thread_behavior, (void *)&t_data);
-    if (create_result) {
-       printf("Błąd przy próbie utworzenia wątku, kod błędu: %d\n", create_result);
-       exit(-1);
+        request::Response response = system_service->handle_request(input);
+        std::string response_str = response.to_string();
+        write(client_fd, response_str.c_str(), sizeof(char)*response_str.size());
     }
-
-    //TODO (przy zadaniu 1) odbieranie -> wyświetlanie albo klawiatura -> wysyłanie
 }
 
-void Connection::main_loop() {
+
+void Connection::run() {
     while(true) {
         int connection_desc = accept(server_desc, NULL, NULL);
         if (connection_desc < 0) {
@@ -63,14 +85,19 @@ void Connection::main_loop() {
             exit(1);
         }
 
-        handle_connection(connection_desc);
+        pthread_t child;
+        ThreadContent thread_content { connection_desc, this };
+        int create_result = pthread_create(&child, NULL, &Connection::wrap_pthread_create, (void *)&thread_content);
+        if (create_result) {
+           printf("Błąd przy próbie utworzenia wątku, kod błędu: %d\n", create_result);
+           exit(-1);
+        }
     }
 }
 
 void sk2::Connection::close() {
     ::close(server_desc);
 }
-
 
 
 } // namespace sk2
