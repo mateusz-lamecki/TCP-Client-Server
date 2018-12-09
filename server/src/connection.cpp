@@ -68,10 +68,12 @@ void Connection::handle_client(int client_fd) {
             /* connection lost */
             std::cout << "Lost connection with client #" << client_fd << std::endl;
             return;
-        }
+        } else {
+		std::cout << "Received from client #" << client_fd << ": " << input << std::endl;
+	}
 
         request::Response response = system_service->handle_request(input);
-        std::string response_str = response.to_string();
+        std::string response_str = response.to_string() + "\n";
         write(client_fd, response_str.c_str(), sizeof(char)*response_str.size());
     }
 }
