@@ -12,4 +12,4 @@ make
 ```
 
 ##### Klient
-A klient nie.
+Klient zostal napisany w Java.
