@@ -1,29 +1,38 @@
 package com.skdwa.tcp;
 
+import lombok.Getter;
+
 import javax.net.SocketFactory;
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.net.Socket;
+import java.nio.charset.StandardCharsets;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-
 public class TCPConnection implements Connection {
+    @Getter
     private boolean isConnected = false;
+    @Getter
     private String host;
+    @Getter
     private int port;
-
 
     private SocketFactory factory;
     private Socket socket;
-    private PrintWriter socketOutputStream = null;
+    private OutputStream socketOutputStream;
+    private OutputStream appOutputStream;
 
     private ExecutorService executorService;
 
-    public TCPConnection(String host, int port) {
+    public TCPConnection(String host, int port, OutputStream outputStream) {
         factory = SocketFactory.getDefault();
         this.port = port;
         this.host = host;
         executorService = Executors.newSingleThreadExecutor();
+        this.appOutputStream = outputStream;
     }
 
 
@@ -34,14 +43,19 @@ public class TCPConnection implements Connection {
         }
         this.socket = factory.createSocket(host, port);
         System.out.println("Connected");
+        startReading();
     }
 
     @Override
     public void disconnect() {
-        if (socketOutputStream != null) {
-            socketOutputStream.flush();
-            socketOutputStream.close();
-            socketOutputStream = null;
+        try {
+            if (socketOutputStream != null) {
+                socketOutputStream.flush();
+                socketOutputStream.close();
+                socketOutputStream = null;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
         try {
             if (!socket.isClosed()) {
@@ -53,16 +67,14 @@ public class TCPConnection implements Connection {
         isConnected = false;
     }
 
-    @Override
-    public void read(OutputStream outputStream) {
+    private void startReading() {
         Thread thread = new Thread(() -> {
             while (!socket.isClosed()) {
                 try (InputStreamReader ir = new InputStreamReader(socket.getInputStream());
                      BufferedReader br = new BufferedReader(ir)) {
-                    StringBuilder builder = new StringBuilder();
                     String message = "";
                     while ((message = br.readLine()) != null && !message.isEmpty()) {
-                        outputStream.write(message.getBytes());
+                        appOutputStream.write(message.getBytes());
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -70,21 +82,24 @@ public class TCPConnection implements Connection {
             }
         });
         thread.start();
-
     }
 
     @Override
     public void write(String message) {
         if (socketOutputStream == null) {
             try {
-                socketOutputStream = new PrintWriter(socket.getOutputStream());
+                socketOutputStream = socket.getOutputStream();
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
         executorService.submit(() -> {
-            socketOutputStream.print(message);
-            socketOutputStream.flush();
+            try {
+                socketOutputStream.write(message.getBytes(StandardCharsets.UTF_8));
+                socketOutputStream.flush();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         });
 
     }

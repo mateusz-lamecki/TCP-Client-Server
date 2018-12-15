@@ -1,6 +1,7 @@
 package com.skdwa.tcp;
 
 import com.google.common.base.Strings;
+import com.skdwa.subscriptions.SubscriptionManager;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
@@ -18,7 +19,7 @@ import java.io.IOException;
 
 //@Slf4j
 public class ClientController {
-    private Session session = new Session();
+    private SubscriptionManager subscriptionManager = new SubscriptionManager();
 
     private Connection connection = null;
     private boolean isConnected = false;
@@ -37,11 +38,11 @@ public class ClientController {
         try {
             setSceneVisibility(false);
             showLoginScene();
-            welcomeLabel.setText("Welcome, " + session.getUser());
+            welcomeLabel.setText("Welcome, " + subscriptionManager.getLoggedUser().getUsername());
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
-            if (!Strings.isNullOrEmpty(session.getToken())) {
+            if (!Strings.isNullOrEmpty(subscriptionManager.getLoggedUser().getToken())) {
                 setSceneVisibility(true);
             }
         }
@@ -64,7 +65,7 @@ public class ClientController {
 
     private void showLoginScene() throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/login.fxml"));
-        LoginController loginController = new LoginController(session);
+        LoginController loginController = new LoginController(subscriptionManager);
         loader.setController(loginController);
         Parent root = loader.load();
         Stage primaryStage = new Stage();
