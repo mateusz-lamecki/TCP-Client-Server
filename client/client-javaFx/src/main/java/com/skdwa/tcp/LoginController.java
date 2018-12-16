@@ -1,19 +1,23 @@
 package com.skdwa.tcp;
 
+import com.google.common.base.Strings;
 import com.skdwa.subscriptions.RegisterLoginTakenException;
+import com.skdwa.subscriptions.SignInException;
 import com.skdwa.subscriptions.SubscriptionManager;
 import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.paint.Color;
+import javafx.stage.Stage;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 
 import java.io.IOException;
 
 @Slf4j
 public class LoginController {
     private SubscriptionManager subscriptionManager;
+    private boolean urlChanged = false;
     private String host;
     private int port;
     private String login;
@@ -36,6 +40,8 @@ public class LoginController {
     private Label loginError;
     @FXML
     private Label passwordError;
+    @FXML
+    private Label infoFx;
 
     public LoginController(SubscriptionManager subscriptionManager) {
         this.subscriptionManager = subscriptionManager;
@@ -43,43 +49,61 @@ public class LoginController {
 
     @FXML
     private void login(Event event) {
-//        clearErrors();
-//        String host = hostFX.getText();
-//        String port = portFX.getText();
-//        String login = loginFX.getText();
-//        String password = passwordFX.getText();
-//
-//        tcpConnection = new TCPConnection(host, Integer.valueOf(port));
-//        try {
-//            tcpConnection.connect();
-//            tcpConnection.write("LOGIN@@@" + login + "@@@" + password);
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
+        try {
+            if (!validateFields()) {
+                return;
+            }
+            if (urlChanged) {
+                connect();
+            }
+            boolean signInSuccessful = subscriptionManager.signIn(login, password);
+            if (signInSuccessful) {
+                exitScene();
+            } else {
+                infoFx.setText("Login unsuccessful\nTry again");
+                infoFx.setTextFill(Color.RED);
+                infoFx.setVisible(true);
+            }
+        } catch (SignInException e) {
+            loginError.setText("Login/Password incorrect");
+            loginError.setVisible(true);
+        } catch (InvalidFieldValueException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            log.error(e.getLocalizedMessage());
+        }
     }
 
     @FXML
     private void register(Event event) {
         try {
-            if (validateFields()) {
+            if (!validateFields()) {
+                return;
+            }
+            if (urlChanged) {
                 connect();
             }
-            try {
-                subscriptionManager.signUp(login, password);
-            } catch (IOException e) {
-                log.error(e.getLocalizedMessage());
-            } catch (RegisterLoginTakenException e) {
-                loginError.setText("\'" + login + "\' is already taken");
-                loginError.setVisible(true);
+            boolean signUpSuccessful = subscriptionManager.signUp(login, password);
+            if (signUpSuccessful) {
+                infoFx.setText("Register successful");
+                infoFx.setTextFill(Color.GREEN);
+            } else {
+                infoFx.setText("Register unsuccessful");
+                infoFx.setTextFill(Color.RED);
             }
+            infoFx.setVisible(true);
+        } catch (RegisterLoginTakenException e) {
+            loginError.setText("\'" + login + "\' is already taken");
+            loginError.setVisible(true);
         } catch (InvalidFieldValueException e) {
             e.printStackTrace();
+        } catch (IOException e) {
+            log.error(e.getLocalizedMessage());
         }
-
     }
 
     private boolean validateFields() throws InvalidFieldValueException {
-        clearErrors();
+        clearInfoFields();
         return readFXFields();
     }
 
@@ -89,28 +113,57 @@ public class LoginController {
 
     private boolean readFXFields() throws InvalidFieldValueException {
         boolean isValid = true;
+        urlChanged = false;
         try {
-            this.host = hostFX.getText();
-            if (StringUtils.isNumeric(portFX.getText())) {
-                this.port = Integer.parseInt(portFX.getText());
+            //HOST
+            ValidationStatus lastValidation = FieldsValidator.hostValidator(hostFX.getText());
+            if (lastValidation.isValid()) {
+                if (Strings.isNullOrEmpty(host) || !host.equals(hostFX.getText())) {
+                    host = hostFX.getText();
+                    urlChanged = true;
+                }
             } else {
-                portError.setText("Only digits are allowed");
+                isValid = false;
+                hostError.setText(lastValidation.getErrorMessage());
+                hostError.setVisible(true);
+            }
+            //PORT
+            lastValidation = FieldsValidator.portValidator(portFX.getText());
+            if (lastValidation.isValid()) {
+                if (port == 0 || !(port == Integer.parseInt(portFX.getText()))) {
+                    port = Integer.parseInt(portFX.getText());
+                    urlChanged = true;
+                }
+            } else {
+                isValid = false;
+                portError.setText(lastValidation.getErrorMessage());
                 portError.setVisible(true);
-                isValid = false;
             }
-            if (loginFX.getText().contains("@@@")) {
-                loginError.setText("Login cannot contains @@@");
+
+            //LOGIN
+            lastValidation = FieldsValidator.hostValidator(loginFX.getText());
+            if (lastValidation.isValid()) {
+                if (Strings.isNullOrEmpty(login) || !login.equals(loginFX.getText())) {
+                    login = loginFX.getText();
+                    urlChanged = true;
+                }
+            } else {
+                isValid = false;
+                loginError.setText(lastValidation.getErrorMessage());
                 loginError.setVisible(true);
-                isValid = false;
-            } else {
-                this.login = loginFX.getText();
             }
-            if (passwordFX.getText().contains("@@@")) {
-                passwordError.setText("Login cannot contains @@@");
-                passwordError.setVisible(true);
-                isValid = false;
+
+            //PASSWORD
+            lastValidation = FieldsValidator.hostValidator(passwordFX.getText());
+            if (lastValidation.isValid()) {
+                if (Strings.isNullOrEmpty(password) || !password.equals(passwordFX.getText())) {
+                    password = passwordFX.getText();
+                    urlChanged = true;
+                }
             } else {
-                this.password = passwordFX.getText();
+                isValid = false;
+                passwordError.setText(lastValidation.getErrorMessage());
+                passwordError.setVisible(true);
             }
         } catch (NumberFormatException e) {
             throw new InvalidFieldValueException(e);
@@ -118,11 +171,17 @@ public class LoginController {
         return isValid;
     }
 
-    private void clearErrors() {
+    private void clearInfoFields() {
         hostError.setVisible(false);
         portError.setVisible(false);
         loginError.setVisible(false);
         passwordError.setVisible(false);
+        infoFx.setVisible(false);
+    }
+
+    private void exitScene() {
+        Stage stage = (Stage) loginFX.getScene().getWindow();
+        stage.close();
     }
 
 }

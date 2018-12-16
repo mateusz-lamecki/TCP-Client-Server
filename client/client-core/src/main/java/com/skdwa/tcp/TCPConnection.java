@@ -40,8 +40,10 @@ public class TCPConnection implements Connection {
     public void connect() throws IOException {
         if (isConnected) {
             disconnect();
+            isConnected = false;
         }
         this.socket = factory.createSocket(host, port);
+        isConnected = true;
         System.out.println("Connected");
         startReading();
     }
@@ -64,7 +66,6 @@ public class TCPConnection implements Connection {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        isConnected = false;
     }
 
     private void startReading() {

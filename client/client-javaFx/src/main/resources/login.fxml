@@ -50,8 +50,9 @@
                   <Label text="Port" GridPane.rowIndex="1" />
                   <Label text="Login" GridPane.rowIndex="2" />
                   <Label text="Password" GridPane.rowIndex="3" />
-                  <TextField fx:id="hostFX" promptText="127.0.0.1" GridPane.columnIndex="1" />
-                  <TextField fx:id="portFX" promptText="3552" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                   <TextField fx:id="portFX" promptText="3552" text="3552" GridPane.columnIndex="1"
+                              GridPane.rowIndex="1"/>
+                   <TextField fx:id="hostFX" promptText="127.0.0.1" text="localhost" GridPane.columnIndex="1"/>
                    <TextField fx:id="loginFX" prefWidth="218.0" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
                   <PasswordField fx:id="passwordFX" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                   <Button mnemonicParsing="false" onAction="#register" text="Register" GridPane.rowIndex="4" />
@@ -97,6 +98,17 @@
                                   AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                <font>
                                    <Font name="System Bold" size="12.0"/>
+                               </font>
+                           </Label>
+                       </children>
+                   </AnchorPane>
+                   <AnchorPane GridPane.columnIndex="2" GridPane.rowIndex="4">
+                       <children>
+                           <Label fx:id="infoFx" alignment="CENTER" text="Info" textFill="#03a108" visible="false"
+                                  AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
+                                  AnchorPane.topAnchor="0.0">
+                               <font>
+                                   <Font name="System Bold" size="16.0"/>
                                </font>
                            </Label>
                        </children>

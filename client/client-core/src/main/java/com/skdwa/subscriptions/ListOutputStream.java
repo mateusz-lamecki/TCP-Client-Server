@@ -15,19 +15,19 @@ public class ListOutputStream extends OutputStream {
 
     @Override
     public void write(int b) throws IOException {
-        char c = (char) b;
-        if (c == '\n') {
-            list.add(stringBuilder.toString());
-            stringBuilder = new StringBuilder();
-        } else {
-            stringBuilder.append(c);
-        }
+//        char c = (char) b;
+//        if (c == '\n') {
+//            list.add(stringBuilder.toString());
+//            stringBuilder = new StringBuilder();
+//        } else {
+//            stringBuilder.append(c);
+//        }
     }
 
     @Override
     public void write(byte[] b) throws IOException {
         super.write(b);
-        String message = String.valueOf(b);
+        String message = new String(b);
         String[] messages = message.split("\\r?\\n");
         for (String mess : messages) {
             stringBuilder.append(mess);

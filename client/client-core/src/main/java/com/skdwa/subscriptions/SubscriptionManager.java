@@ -33,24 +33,22 @@ public class SubscriptionManager {
         }
         if (!connection.isConnected()) {
             connection.connect();
+            log.debug("{} connected to {}:{}", login, connection.getHost(), connection.getPort());
         }
-        log.debug("{} connected to {}:{}", login, connection.getHost(), connection.getPort());
         connection.write("REGISTER@@@" + login + "@@@" + password);
         byte i = 0;
         while (i++ < 10) {
             for (int l = 0; l < messages.size(); l++) {
                 String message = messages.get(l);
                 if (message.contains("OK")) {
-                    String token = message.split("@@@")[1];
-                    loggedUser = new LoggedUser(login, token);
-                    log.info("{} registered successful - token: {}", login, token);
+                    log.info("{} registered successful!", login);
+                    messages.remove(l);
                     return true;
                 }
                 if (message.contains("LOGIN_TAKEN")) {
+                    messages.remove(l);
                     throw new RegisterLoginTakenException(login + " is already taken");
                 }
-                messages.remove(l);
-                l--;
             }
             try {
                 Thread.sleep(200);
@@ -58,7 +56,46 @@ public class SubscriptionManager {
                 log.error(e.getMessage());
             }
         }
-        log.info("{} register failed", login);
+        log.info("{} register failed, did not receive response from the server", login);
+        return false;
+    }
+
+    public boolean signIn(String login, String password) throws IOException, SignInException {
+        if (connection == null) {
+            throw new IllegalStateException("Connection is not setted up");
+        }
+        if (!connection.isConnected()) {
+            connection.connect();
+            log.debug("{} connected to {}:{}", login, connection.getHost(), connection.getPort());
+        }
+        connection.write("LOGIN@@@" + login + "@@@" + password);
+        byte i = 0;
+        while (i++ < 10) {
+            for (int l = 0; l < messages.size(); l++) {
+                String message = messages.get(l);
+                if (message.contains("OK")) {
+                    String[] splitted = message.split("@@@");
+                    if (splitted.length != 2) {
+                        throw new IllegalStateException("Cannot find token in server response");
+                    }
+                    String token = splitted[1];
+                    loggedUser = new LoggedUser(login, token);
+                    log.info("{} login successful - token: {}", login, token);
+                    messages.remove(l);
+                    return true;
+                }
+                if (message.contains("INVALID_PASSWORD")) {
+                    messages.remove(l);
+                    throw new SignInException("Login or password is incorrect");
+                }
+            }
+            try {
+                Thread.sleep(200);
+            } catch (InterruptedException e) {
+                log.error(e.getMessage());
+            }
+        }
+        log.info("{} login failed, did not receive response from the server", login);
         return false;
     }
 
