@@ -12,32 +12,7 @@
             <menus>
                 <Menu mnemonicParsing="false" text="File">
                     <items>
-                        <MenuItem mnemonicParsing="false" text="New"/>
-                        <MenuItem mnemonicParsing="false" text="Open…"/>
-                        <Menu mnemonicParsing="false" text="Open Recent"/>
-                        <SeparatorMenuItem mnemonicParsing="false"/>
-                        <MenuItem mnemonicParsing="false" text="Close"/>
-                        <MenuItem mnemonicParsing="false" text="Save"/>
-                        <MenuItem mnemonicParsing="false" text="Save As…"/>
-                        <MenuItem mnemonicParsing="false" text="Revert"/>
-                        <SeparatorMenuItem mnemonicParsing="false"/>
-                        <MenuItem mnemonicParsing="false" text="Preferences…"/>
-                        <SeparatorMenuItem mnemonicParsing="false"/>
-                        <MenuItem mnemonicParsing="false" text="Quit"/>
-                    </items>
-                </Menu>
-                <Menu mnemonicParsing="false" text="Edit">
-                    <items>
-                        <MenuItem mnemonicParsing="false" text="Undo"/>
-                        <MenuItem mnemonicParsing="false" text="Redo"/>
-                        <SeparatorMenuItem mnemonicParsing="false"/>
-                        <MenuItem mnemonicParsing="false" text="Cut"/>
-                        <MenuItem mnemonicParsing="false" text="Copy"/>
-                        <MenuItem mnemonicParsing="false" text="Paste"/>
-                        <MenuItem mnemonicParsing="false" text="Delete"/>
-                        <SeparatorMenuItem mnemonicParsing="false"/>
-                        <MenuItem mnemonicParsing="false" text="Select All"/>
-                        <MenuItem mnemonicParsing="false" text="Unselect All"/>
+                        <MenuItem mnemonicParsing="false" text="New Post"/>
                     </items>
                 </Menu>
                 <Menu mnemonicParsing="false" text="Help">
@@ -74,15 +49,44 @@
                 </ScrollPane>
                 <AnchorPane>
                     <children>
-                        <Label alignment="CENTER" layoutX="14.0" layoutY="14.0" style="&#10;" text="Details"
-                               textAlignment="CENTER" wrapText="false">
-                            <font>
-                                <Font size="18.0" fx:id="x1"/>
-                            </font>
-                            <textFill>
-                                <Color blue="0.624" green="0.624" red="0.624" fx:id="x2"/>
-                            </textFill>
-                        </Label>
+                        <VBox layoutX="11.0" layoutY="14.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="8.0"
+                              AnchorPane.rightAnchor="8.0" AnchorPane.topAnchor="0.0">
+                            <children>
+                                <HBox>
+                                    <children>
+                                        <Label alignment="CENTER" style="&#10;" text="Subscribed subjects"
+                                               textAlignment="CENTER" wrapText="false">
+                                            <font>
+                                                <Font size="15.0" fx:id="x1"/>
+                                            </font>
+                                            <textFill>
+                                                <Color blue="0.624" green="0.624" red="0.624" fx:id="x2"/>
+                                            </textFill>
+                                        </Label>
+                                        <Label fx:id="newSubjectsAlertFX" alignment="CENTER" style="&#10;" text="NEWS"
+                                               textAlignment="CENTER" visible="false" wrapText="false">
+                                            <font>
+                                                <Font size="18.0" fx:id="x11"/>
+                                            </font>
+                                            <textFill>
+                                                <Color blue="0.624" green="0.624" red="0.624" fx:id="x21"/>
+                                            </textFill>
+                                        </Label>
+                                    </children>
+                                </HBox>
+                                <ListView fx:id="subscribedListFX" prefHeight="200.0" prefWidth="200.0"
+                                          VBox.vgrow="ALWAYS"/>
+                                <AnchorPane>
+                                    <children>
+                                        <Button fx:id="subscribeNewButtonFX" alignment="CENTER_RIGHT"
+                                                contentDisplay="RIGHT" mnemonicParsing="false" text="Subscribe..."
+                                                AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0"/>
+                                        <Button fx:id="unsubscribeSubjectButtonFX" mnemonicParsing="false"
+                                                text="Unsubscribe"/>
+                                    </children>
+                                </AnchorPane>
+                            </children>
+                        </VBox>
                     </children>
                 </AnchorPane>
             </items>

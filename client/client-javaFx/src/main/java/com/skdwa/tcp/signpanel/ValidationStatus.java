@@ -1,4 +1,4 @@
-package com.skdwa.tcp;
+package com.skdwa.tcp.signpanel;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

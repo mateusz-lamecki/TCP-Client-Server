@@ -1,7 +1,9 @@
 package com.skdwa.tcp;
 
 import com.google.common.base.Strings;
+import com.skdwa.subscriptions.ResponseException;
 import com.skdwa.subscriptions.SubscriptionManager;
+import com.skdwa.tcp.signpanel.LoginController;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
@@ -9,6 +11,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.layout.VBox;
@@ -34,12 +37,28 @@ public class ClientController {
     private ListView articlesListFX;
 
     @FXML
+    private ListView<String> subscribedListFX;
+
+    @FXML
+    private Button subscribeNewButtonFX;
+
+    @FXML
+    private Button unsubscribeSubjectButtonFX;
+
+    @FXML
+    private Label newSubjectsAlertFX;
+
+    @FXML
     private void initialize() {
         try {
             setSceneVisibility(false);
-            showLoginScene();
+            boolean isLogged = logInUser();
+            if (!isLogged) {
+                ((Stage) mainContainer.getScene().getWindow()).close();
+            }
             welcomeLabel.setText("Welcome, " + subscriptionManager.getLoggedUser().getUsername());
-        } catch (IOException e) {
+            subscribedListFX.getItems().addAll(subscriptionManager.getUserSubscriptions());
+        } catch (IOException | ResponseException e) {
             e.printStackTrace();
         } finally {
             if (!Strings.isNullOrEmpty(subscriptionManager.getLoggedUser().getToken())) {
@@ -61,6 +80,11 @@ public class ClientController {
         final KeyFrame kf2 = new KeyFrame(Duration.seconds(seconds), e -> mainStatusBarFx.setText(""));
         final Timeline timeline = new Timeline(kf1, kf2);
         Platform.runLater(timeline::play);
+    }
+
+    private boolean logInUser() throws IOException {
+        showLoginScene();
+        return subscriptionManager.getLoggedUser() != null && !Strings.isNullOrEmpty(subscriptionManager.getLoggedUser().getToken());
     }
 
     private void showLoginScene() throws IOException {

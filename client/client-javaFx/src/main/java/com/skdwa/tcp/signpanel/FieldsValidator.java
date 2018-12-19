@@ -1,4 +1,4 @@
-package com.skdwa.tcp;
+package com.skdwa.tcp.signpanel;
 
 import com.google.common.base.Strings;
 import org.apache.commons.lang3.StringUtils;

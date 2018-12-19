@@ -1,4 +1,4 @@
-package com.skdwa.tcp;
+package com.skdwa.tcp.signpanel;
 
 public class InvalidFieldValueException extends Exception {
     public InvalidFieldValueException(Throwable cause) {
