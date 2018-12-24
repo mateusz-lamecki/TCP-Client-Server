@@ -60,16 +60,16 @@ void *Connection::wrap_pthread_create(void *content) {
 
 void Connection::handle_client(int client_fd) {
     /* This function is called once during thread initiation */
-    std::cout << "Established connection with client #" << client_fd << std::endl;
+    std::clog << "Established connection with client #" << client_fd << std::endl;
 
     while(true) {
         std::string input = input::read_input(client_fd);
         if(input.empty()) {
             /* connection lost */
-            std::cout << "Lost connection with client #" << client_fd << std::endl;
+            std::clog << "Lost connection with client #" << client_fd << std::endl;
             return;
         } else {
-		std::cout << "Received from client #" << client_fd << ": " << input << std::endl;
+		std::clog << "Received from client #" << client_fd << ": " << input << std::endl;
 	}
 
         request::Response response = system_service->handle_request(input);

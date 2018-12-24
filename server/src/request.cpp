@@ -106,7 +106,7 @@ Response ReadTopicsAction::handle(std::string request_raw, resources::Resources&
 }
 
 Response InvalidAction::handle(std::string request_raw, resources::Resources& res) {
-    // TODO;
+    return Response(std::make_unique<request::OtherErrorStatus>(), "Unhandled action");
 }
 
 
@@ -149,11 +149,11 @@ std::unique_ptr<Action> Action::detect_action(std::string raw_action) {
 
 std::unique_ptr<Status> Status::detect_status(std::string raw_status) {
     if(raw_status == "OK") return std::unique_ptr<Status>{ new OkStatus() };
-    else if(raw_status == "INVALID_PASSWORD")  return std::unique_ptr<Status>{ new InvalidPasswordStatus() };
-    else if(raw_status == "LOGIN_TAKEN")  return std::unique_ptr<Status>{ new LoginTakenStatus() };
-    else if(raw_status == "INVALID_TOKEN")  return std::unique_ptr<Status>{ new InvalidTokenStatus() };
-    else if(raw_status == "INVALID_TOPIC")  return std::unique_ptr<Status>{ new InvalidTopicStatus() };
-    else if(raw_status == "OTHER_ERROR")  return std::unique_ptr<Status>{ new OtherErrorStatus() };
+    else if(raw_status == "INVALID_PASSWORD") return std::unique_ptr<Status>{ new InvalidPasswordStatus() };
+    else if(raw_status == "LOGIN_TAKEN") return std::unique_ptr<Status>{ new LoginTakenStatus() };
+    else if(raw_status == "INVALID_TOKEN") return std::unique_ptr<Status>{ new InvalidTokenStatus() };
+    else if(raw_status == "INVALID_TOPIC") return std::unique_ptr<Status>{ new InvalidTopicStatus() };
+    else return std::unique_ptr<Status>{ new OtherErrorStatus() };
 }
 
 
