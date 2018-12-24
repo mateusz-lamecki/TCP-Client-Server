@@ -1,41 +1,45 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.paint.Color?>
 <?import javafx.scene.text.Font?>
-<VBox xmlns:fx="http://javafx.com/fxml/1" fx:id="mainContainer" prefHeight="600.0" prefWidth="900.0"
-      xmlns="http://javafx.com/javafx/10.0.1" fx:controller="com.skdwa.tcp.ClientController">
+
+<VBox fx:id="mainContainer" prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/8.0.192" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.skdwa.tcp.ClientController">
     <children>
         <MenuBar VBox.vgrow="NEVER">
             <menus>
                 <Menu mnemonicParsing="false" text="File">
                     <items>
-                        <MenuItem mnemonicParsing="false" text="New Post"/>
+                        <MenuItem mnemonicParsing="false" onAction="#addNewPost" text="New Post" />
                     </items>
                 </Menu>
                 <Menu mnemonicParsing="false" text="Help">
                     <items>
-                        <MenuItem mnemonicParsing="false" text="About MyHelloApp"/>
+                        <MenuItem mnemonicParsing="false" text="About MyHelloApp" />
                     </items>
                 </Menu>
             </menus>
         </MenuBar>
-        <SplitPane dividerPositions="0.2505567928730512, 0.7505567928730512" focusTraversable="true" prefHeight="-1.0"
-                   prefWidth="-1.0" VBox.vgrow="ALWAYS">
+        <SplitPane dividerPositions="0.2505567928730512, 0.7505567928730512" focusTraversable="true" prefHeight="-1.0" prefWidth="-1.0" VBox.vgrow="ALWAYS">
             <items>
                 <AnchorPane>
                     <children>
-                        <VBox layoutY="-11.0" prefHeight="200.0" prefWidth="100.0" AnchorPane.bottomAnchor="0.0"
-                              AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                        <VBox layoutY="-11.0" prefHeight="200.0" prefWidth="100.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                             <children>
                                 <AnchorPane>
                                     <children>
-                                        <Label fx:id="welcomeLabel" alignment="CENTER" contentDisplay="CENTER"
-                                               prefHeight="20.0" prefWidth="94.0" text="Hello, "
-                                               AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
-                                               AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0"/>
+                                        <Label fx:id="welcomeLabel" alignment="CENTER" contentDisplay="CENTER" prefHeight="20.0" prefWidth="94.0" text="Hello, " AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                                     </children>
                                 </AnchorPane>
                             </children>
@@ -44,45 +48,44 @@
                 </AnchorPane>
                 <ScrollPane fitToHeight="true" fitToWidth="true" prefHeight="-1.0" prefWidth="-1.0">
                     <content>
-                        <ListView fx:id="articlesListFX" prefHeight="200.0" prefWidth="200.0"/>
+                        <ListView fx:id="articlesListFX" prefHeight="200.0" prefWidth="200.0" />
                     </content>
                 </ScrollPane>
                 <AnchorPane>
                     <children>
-                        <VBox layoutX="11.0" layoutY="14.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="8.0"
-                              AnchorPane.rightAnchor="8.0" AnchorPane.topAnchor="0.0">
+                        <VBox layoutX="11.0" layoutY="14.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="8.0" AnchorPane.rightAnchor="8.0" AnchorPane.topAnchor="0.0">
                             <children>
                                 <HBox>
                                     <children>
-                                        <Label alignment="CENTER" style="&#10;" text="Subscribed subjects"
-                                               textAlignment="CENTER" wrapText="false">
-                                            <font>
-                                                <Font size="15.0" fx:id="x1"/>
-                                            </font>
+                                        <Label alignment="CENTER" style="&#10;" text="Subscribed subjects" textAlignment="CENTER" wrapText="false">
                                             <textFill>
-                                                <Color blue="0.624" green="0.624" red="0.624" fx:id="x2"/>
+                                                <Color blue="0.624" green="0.624" red="0.624" fx:id="x2" />
                                             </textFill>
+                                 <HBox.margin>
+                                    <Insets top="4.0" />
+                                 </HBox.margin>
                                         </Label>
-                                        <Label fx:id="newSubjectsAlertFX" alignment="CENTER" style="&#10;" text="NEWS"
-                                               textAlignment="CENTER" visible="false" wrapText="false">
+                                        <Label fx:id="newSubjectsAlertFX" alignment="CENTER" style="&#10;" text="NEWS" textAlignment="CENTER" visible="false" wrapText="false">
                                             <font>
-                                                <Font size="18.0" fx:id="x11"/>
+                                                <Font size="18.0" fx:id="x11" />
                                             </font>
                                             <textFill>
-                                                <Color blue="0.624" green="0.624" red="0.624" fx:id="x21"/>
+                                                <Color blue="0.624" green="0.624" red="0.624" fx:id="x21" />
                                             </textFill>
                                         </Label>
                                     </children>
+                           <VBox.margin>
+                              <Insets />
+                           </VBox.margin>
                                 </HBox>
-                                <ListView fx:id="subscribedListFX" prefHeight="200.0" prefWidth="200.0"
-                                          VBox.vgrow="ALWAYS"/>
+                                <ListView fx:id="subscribedListFX" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
+                           <VBox.margin>
+                              <Insets top="4.0" />
+                           </VBox.margin></ListView>
                                 <AnchorPane>
                                     <children>
-                                        <Button fx:id="subscribeNewButtonFX" alignment="CENTER_RIGHT"
-                                                contentDisplay="RIGHT" mnemonicParsing="false" text="Subscribe..."
-                                                AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0"/>
-                                        <Button fx:id="unsubscribeSubjectButtonFX" mnemonicParsing="false"
-                                                text="Unsubscribe"/>
+                                        <Button fx:id="subscribeNewButtonFX" alignment="CENTER_RIGHT" contentDisplay="RIGHT" mnemonicParsing="false" text="Subscribe..." AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" />
+                                        <Button fx:id="unsubscribeSubjectButtonFX" mnemonicParsing="false" text="Unsubscribe" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" />
                                     </children>
                                 </AnchorPane>
                             </children>
@@ -95,19 +98,16 @@
             <children>
                 <AnchorPane prefHeight="0.0" prefWidth="918.0" HBox.hgrow="ALWAYS">
                     <children>
-                        <Label fx:id="mainStatusBarFx" layoutY="-35.0" maxHeight="1.7976931348623157E308"
-                               maxWidth="-1.0" prefHeight="35.0" prefWidth="885.0" textFill="#5b5b5b"
-                               AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="2.0" AnchorPane.rightAnchor="2.0"
-                               AnchorPane.topAnchor="0.0">
+                        <Label fx:id="mainStatusBarFx" layoutY="-35.0" maxHeight="1.7976931348623157E308" maxWidth="-1.0" prefHeight="35.0" prefWidth="885.0" textFill="#5b5b5b" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="2.0" AnchorPane.rightAnchor="2.0" AnchorPane.topAnchor="0.0">
                             <font>
-                                <Font name="System Bold Italic" size="15.0" fx:id="x3"/>
+                                <Font name="System Bold Italic" size="15.0" fx:id="x3" />
                             </font>
                         </Label>
                     </children>
                 </AnchorPane>
             </children>
             <padding>
-                <Insets bottom="3.0" left="3.0" right="3.0" top="3.0"/>
+                <Insets bottom="3.0" left="3.0" right="3.0" top="3.0" />
             </padding>
         </HBox>
     </children>

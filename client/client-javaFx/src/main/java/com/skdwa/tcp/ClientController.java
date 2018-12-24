@@ -100,4 +100,9 @@ public class ClientController {
         primaryStage.setScene(scene);
         primaryStage.showAndWait();
     }
+
+    @FXML
+    private void addNewPost(){
+        System.out.println("test");
+    }
 }
