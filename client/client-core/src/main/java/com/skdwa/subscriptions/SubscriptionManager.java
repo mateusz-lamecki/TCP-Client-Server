@@ -27,7 +27,7 @@ public class SubscriptionManager {
 	 * @return true if register successful, false otherwise
 	 * @throws IOException when connection to server occurs
 	 */
-	public boolean signUp(String login, String password) throws IOException, RegisterLoginTakenException {
+	public boolean signUp(String login, String password) throws IOException, LoginIsAlreadyTakenException {
 		connectIfNotConnected();
 		connection.write("REGISTER@@@" + login + "@@@" + password);
 		Response response = waitForResponse("OK", "LOGIN_TAKEN", 2);
@@ -36,7 +36,7 @@ public class SubscriptionManager {
 			return false;
 		}
 		if (!response.isOk()) {
-			throw new RegisterLoginTakenException("login" + " is taken");
+			throw new LoginIsAlreadyTakenException("login" + " is taken");
 		} else {
 			loggedUser = new LoggedUser(login, response.getMessage());
 			return true;
@@ -101,8 +101,8 @@ public class SubscriptionManager {
 			throw new IllegalStateException("User is not logged");
 		}
 		connectIfNotConnected();
-		connection.write("PUBLISH " + loggedUser.getToken() + "@@@" + subject + "@@@" + content);
-		Response response = waitForResponse("OK", "INVALID_TOKEN", 2);
+		connection.write("PUBLISH@@@" + loggedUser.getToken() + "@@@" + subject + "@@@" + content);
+		Response response = waitForResponse("OK", "INVALID_TOKEN", 1);
 		if (response == null) {
 			log.info("Did not receive response from the server");
 			return false;

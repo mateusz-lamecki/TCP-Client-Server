@@ -3,7 +3,6 @@ package com.skdwa.tcp;
 import com.google.common.base.Strings;
 import com.skdwa.subscriptions.ResponseException;
 import com.skdwa.subscriptions.SubscriptionManager;
-import com.skdwa.tcp.signpanel.LoginController;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
@@ -58,6 +57,7 @@ public class ClientController {
             }
             welcomeLabel.setText("Welcome, " + subscriptionManager.getLoggedUser().getUsername());
             subscribedListFX.getItems().addAll(subscriptionManager.getUserSubscriptions());
+            mainContainer.resize(680, 600);
         } catch (IOException | ResponseException e) {
             e.printStackTrace();
         } finally {
@@ -102,7 +102,17 @@ public class ClientController {
     }
 
     @FXML
-    private void addNewPost(){
-        System.out.println("test");
+    private void addNewPost() throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/newPost.fxml"));
+        NewPostController loginController = new NewPostController(subscriptionManager);
+        loader.setController(loginController);
+        Parent root = loader.load();
+        Stage primaryStage = new Stage();
+        primaryStage.setTitle("New Post");
+        Scene scene = new Scene(root, 850, 650);
+        primaryStage.setMinWidth(650);
+        primaryStage.setMinHeight(450);
+        primaryStage.setScene(scene);
+        primaryStage.showAndWait();
     }
 }

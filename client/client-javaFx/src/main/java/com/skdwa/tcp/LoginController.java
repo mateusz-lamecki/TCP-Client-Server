@@ -1,9 +1,12 @@
-package com.skdwa.tcp.signpanel;
+package com.skdwa.tcp;
 
 import com.google.common.base.Strings;
-import com.skdwa.subscriptions.RegisterLoginTakenException;
+import com.skdwa.subscriptions.LoginIsAlreadyTakenException;
 import com.skdwa.subscriptions.SignInException;
 import com.skdwa.subscriptions.SubscriptionManager;
+import com.skdwa.tcp.FieldsValidator;
+import com.skdwa.tcp.InvalidFieldValueException;
+import com.skdwa.tcp.ValidationStatus;
 import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
@@ -92,7 +95,7 @@ public class LoginController {
                 infoFx.setTextFill(Color.RED);
             }
             infoFx.setVisible(true);
-        } catch (RegisterLoginTakenException e) {
+        } catch (LoginIsAlreadyTakenException e) {
             loginError.setText("\'" + login + "\' is already taken");
             loginError.setVisible(true);
         } catch (InvalidFieldValueException e) {
