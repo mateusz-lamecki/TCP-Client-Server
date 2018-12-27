@@ -25,7 +25,8 @@ Response RegisterAction::handle(std::string request_raw, resources::Resources& r
     bool success = res.register_user(words[1], words[2]);
     // Check wherher provided login is not already used
     if(success) {
-        return Response(std::make_unique<request::OkStatus>());
+	    std::string user_token = res.get_user_token(words[1], words[2]);
+        return Response(std::make_unique<request::OkStatus>(), user_token);
     } else {
         return Response(std::make_unique<request::LoginTakenStatus>());
     }
