@@ -20,7 +20,7 @@ public class MainClient extends Application {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/sample.fxml"));
         Parent root = loader.load();
         primaryStage.setTitle("TCP Client Subscribe");
-        Scene scene = new Scene(root, 300, 275);
+        Scene scene = new Scene(root, 850, 750);
         primaryStage.setMinWidth(850);
         primaryStage.setMinHeight(750);
 
