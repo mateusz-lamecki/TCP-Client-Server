@@ -1,12 +1,12 @@
-package com.skdwa.tcp;
+package com.skdwa.tcp.login;
 
 import com.google.common.base.Strings;
 import com.skdwa.subscriptions.LoginIsAlreadyTakenException;
 import com.skdwa.subscriptions.SignInException;
 import com.skdwa.subscriptions.SubscriptionManager;
-import com.skdwa.tcp.FieldsValidator;
+import com.skdwa.tcp.validate.FieldsValidator;
 import com.skdwa.tcp.InvalidFieldValueException;
-import com.skdwa.tcp.ValidationStatus;
+import com.skdwa.tcp.validate.ValidationStatus;
 import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;

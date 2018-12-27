@@ -1,4 +1,4 @@
-package com.skdwa.tcp;
+package com.skdwa.tcp.post;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

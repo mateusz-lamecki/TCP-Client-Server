@@ -3,6 +3,8 @@ package com.skdwa.tcp;
 import com.google.common.base.Strings;
 import com.skdwa.subscriptions.ResponseException;
 import com.skdwa.subscriptions.SubscriptionManager;
+import com.skdwa.tcp.login.LoginController;
+import com.skdwa.tcp.post.NewPostController;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Platform;

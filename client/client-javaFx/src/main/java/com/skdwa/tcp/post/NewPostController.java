@@ -1,7 +1,9 @@
-package com.skdwa.tcp;
+package com.skdwa.tcp.post;
 
 import com.skdwa.subscriptions.ResponseException;
 import com.skdwa.subscriptions.SubscriptionManager;
+import com.skdwa.tcp.validate.FieldsValidator;
+import com.skdwa.tcp.validate.ValidationStatus;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;

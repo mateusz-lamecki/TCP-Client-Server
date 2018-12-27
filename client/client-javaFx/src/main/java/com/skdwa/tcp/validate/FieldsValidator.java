@@ -1,7 +1,7 @@
-package com.skdwa.tcp;
+package com.skdwa.tcp.validate;
 
 import com.google.common.base.Strings;
-import com.skdwa.tcp.ValidationStatus;
+import com.skdwa.tcp.validate.ValidationStatus;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.regex.Matcher;
