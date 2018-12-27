@@ -47,6 +47,8 @@ Connection::Connection(int server_port, std::shared_ptr<SystemService> system_se
         fprintf(stderr, "Błąd przy próbie ustawienia wielkości kolejki.\n");
         exit(1);
     }
+
+    std::cerr << "Server is running on port " << server_port << std::endl;
 }
 
 void *Connection::wrap_pthread_create(void *content) {
@@ -60,20 +62,21 @@ void *Connection::wrap_pthread_create(void *content) {
 
 void Connection::handle_client(int client_fd) {
     /* This function is called once during thread initiation */
-    std::clog << "Established connection with client #" << client_fd << std::endl;
+    std::cout << "Client #" << client_fd << ": connection established" << std::endl;
 
     while(true) {
         std::string input = input::read_input(client_fd);
         if(input.empty()) {
             /* connection lost */
-            std::clog << "Lost connection with client #" << client_fd << std::endl;
+            std::cout << "Client #" << client_fd << ": connection lost" << std::endl;
             return;
         } else {
-		std::clog << "Received from client #" << client_fd << ": " << input << std::endl;
+		std::cout << "Client #" << client_fd << ": received " << input;
 	}
 
         request::Response response = system_service->handle_request(input);
         std::string response_str = response.to_string() + "\n";
+	std::cerr << "Client #" << client_fd << ": sending " << response_str;
         write(client_fd, response_str.c_str(), sizeof(char)*response_str.size());
     }
 }
