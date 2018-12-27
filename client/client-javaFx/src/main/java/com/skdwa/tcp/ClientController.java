@@ -88,7 +88,7 @@ public class ClientController {
     }
 
     private void showLoginScene() throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/login.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/login.fxml"));
         LoginController loginController = new LoginController(subscriptionManager);
         loader.setController(loginController);
         Parent root = loader.load();
@@ -103,7 +103,7 @@ public class ClientController {
 
     @FXML
     private void addNewPost() throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/newPost.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/newPost.fxml"));
         NewPostController loginController = new NewPostController(subscriptionManager);
         loader.setController(loginController);
         Parent root = loader.load();
