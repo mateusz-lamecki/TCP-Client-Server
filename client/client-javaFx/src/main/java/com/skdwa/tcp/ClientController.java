@@ -1,6 +1,9 @@
 package com.skdwa.tcp;
 
 import com.google.common.base.Strings;
+import com.skdwa.subscriptions.ResponseException;
+import com.skdwa.subscriptions.SubscriptionManager;
+import com.skdwa.tcp.signpanel.LoginController;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
@@ -8,6 +11,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.layout.VBox;
@@ -18,7 +22,7 @@ import java.io.IOException;
 
 //@Slf4j
 public class ClientController {
-    private Session session = new Session();
+    private SubscriptionManager subscriptionManager = new SubscriptionManager();
 
     private Connection connection = null;
     private boolean isConnected = false;
@@ -33,15 +37,31 @@ public class ClientController {
     private ListView articlesListFX;
 
     @FXML
+    private ListView<String> subscribedListFX;
+
+    @FXML
+    private Button subscribeNewButtonFX;
+
+    @FXML
+    private Button unsubscribeSubjectButtonFX;
+
+    @FXML
+    private Label newSubjectsAlertFX;
+
+    @FXML
     private void initialize() {
         try {
             setSceneVisibility(false);
-            showLoginScene();
-            welcomeLabel.setText("Welcome, " + session.getUser());
-        } catch (IOException e) {
+            boolean isLogged = logInUser();
+            if (!isLogged) {
+                ((Stage) mainContainer.getScene().getWindow()).close();
+            }
+            welcomeLabel.setText("Welcome, " + subscriptionManager.getLoggedUser().getUsername());
+            subscribedListFX.getItems().addAll(subscriptionManager.getUserSubscriptions());
+        } catch (IOException | ResponseException e) {
             e.printStackTrace();
         } finally {
-            if (!Strings.isNullOrEmpty(session.getToken())) {
+            if (!Strings.isNullOrEmpty(subscriptionManager.getLoggedUser().getToken())) {
                 setSceneVisibility(true);
             }
         }
@@ -62,9 +82,14 @@ public class ClientController {
         Platform.runLater(timeline::play);
     }
 
+    private boolean logInUser() throws IOException {
+        showLoginScene();
+        return subscriptionManager.getLoggedUser() != null && !Strings.isNullOrEmpty(subscriptionManager.getLoggedUser().getToken());
+    }
+
     private void showLoginScene() throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/login.fxml"));
-        LoginController loginController = new LoginController(session);
+        LoginController loginController = new LoginController(subscriptionManager);
         loader.setController(loginController);
         Parent root = loader.load();
         Stage primaryStage = new Stage();
@@ -74,5 +99,10 @@ public class ClientController {
         primaryStage.setMinHeight(450);
         primaryStage.setScene(scene);
         primaryStage.showAndWait();
+    }
+
+    @FXML
+    private void addNewPost(){
+        System.out.println("test");
     }
 }
