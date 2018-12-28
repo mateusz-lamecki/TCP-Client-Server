@@ -44,6 +44,10 @@ class User {
 class Resources {
     public:
     Resources();
+
+    void set_logged_client(int client_id, std::string login_id);
+    void remove_logged_client(int client_id);
+
     std::string get_user_token(std::string login, std::string password);
     std::optional<User> get_user(std::string token);
     bool register_user(std::string login, std::string password);
@@ -59,6 +63,7 @@ class Resources {
     const std::string NON_EXISTING_TOKEN = "KDKFMF-NON-EXISTING-ASDASD";
 
     private:
+    std::map<int,std::string> logged_clients;
     std::map<std::string, Topic> topics; // TODO: change to unordered_set
     std::map<std::string, User> users; // TODO: change to unordered_set
 };

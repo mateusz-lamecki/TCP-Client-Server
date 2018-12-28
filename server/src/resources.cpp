@@ -66,6 +66,15 @@ Resources::Resources() {
     users["mateusz"] = User("mateusz", "pass");
 }
 
+void Resources::set_logged_client(int client_id, std::string login_id) {
+    logged_clients[client_id] = login_id;
+}
+
+void Resources::remove_logged_client(int client_id) {
+    auto it = logged_clients.find(client_id);
+    if(it != logged_clients.end()) logged_clients.erase(it);
+}
+
 bool Resources::register_user(std::string login, std::string password) {
     auto it = users.find(login);
     if(it != users.end()) return false;

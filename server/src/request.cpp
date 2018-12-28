@@ -12,6 +12,7 @@ Response LoginAction::handle(std::string request_raw, resources::Resources& res,
     auto words = utils::split_string(request_raw, request::DELIMITER);
     std::string user_token = res.get_user_token(words[1], words[2]);
     if(user_token != res.NON_EXISTING_TOKEN) {
+        res.set_logged_client(client_fd, user_token);
         return Response(std::make_unique<request::OkStatus>(), user_token);
     } else {
         return Response(std::make_unique<request::InvalidPasswordStatus>());
@@ -26,6 +27,7 @@ Response RegisterAction::handle(std::string request_raw, resources::Resources& r
     // Check wherher provided login is not already used
     if(success) {
 	    std::string user_token = res.get_user_token(words[1], words[2]);
+        res.set_logged_client(client_fd, user_token);
         return Response(std::make_unique<request::OkStatus>(), user_token);
     } else {
         return Response(std::make_unique<request::LoginTakenStatus>());
