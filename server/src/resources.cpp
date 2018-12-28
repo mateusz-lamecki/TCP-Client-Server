@@ -63,6 +63,7 @@ bool User::operator <(const User &rhs) const {
 /* Resources class */
 
 Resources::Resources() {
+    // TODO: remove!
     users["mateusz"] = User("mateusz", "pass");
 }
 

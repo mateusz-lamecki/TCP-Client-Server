@@ -3,6 +3,7 @@
 #include <memory>
 #include <vector>
 #include <string>
+#include <thread>
 
 #include "connection.h"
 #include "system_service.h"
@@ -17,6 +18,7 @@ class ServerService {
     void run();
 
     private:
+    static void handle_pings();
     std::unique_ptr<Connection> connection;
     std::shared_ptr<SystemService> system_service;
 };

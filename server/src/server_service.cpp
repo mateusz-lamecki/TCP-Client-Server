@@ -9,9 +9,14 @@ ServerService::ServerService(int server_port) {
 }
 
 void ServerService::run() {
+    std::thread pings_thread(handle_pings);
     connection->run();
 }
 
+void ServerService::handle_pings() {
+    while(true) {
+    }
+}
 
 } // namespace sk2
 
