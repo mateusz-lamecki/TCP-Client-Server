@@ -16,6 +16,8 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.scene.control.SelectionMode;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.util.Duration;
@@ -38,7 +40,7 @@ public class ClientController {
     @FXML
     private Label welcomeLabel;
     @FXML
-    private ListView articlesListFX;
+    private ListView<String> articlesListFX;
 
     @FXML
     private ListView<String> subscribedListFX;
@@ -69,8 +71,10 @@ public class ClientController {
             if (!Strings.isNullOrEmpty(subscriptionManager.getLoggedUser().getToken())) {
                 setSceneVisibility(true);
             }
+            subscribedListFX.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
         }
     }
+
     @FXML
     private void unsubscribeSelected(){
         List<String> subscribedList = subscribedListFX.getSelectionModel().getSelectedItems();
@@ -113,6 +117,23 @@ public class ClientController {
         primaryStage.setMinHeight(450);
         primaryStage.setScene(scene);
         primaryStage.showAndWait();
+    }
+
+    @FXML
+    private void subscriptionSelected(){
+        log.debug("Subscription selected");
+        List<String> items = subscribedListFX.getSelectionModel().getSelectedItems();
+        if(items.size() == 1){
+            try {
+                List<String> messages = subscriptionManager.getAllMessages(items.get(0));
+                articlesListFX.getItems().clear();
+                articlesListFX.getItems().addAll(messages);
+            } catch (IOException e) {
+                log.error(e.getMessage());
+            } catch (ResponseException e) {
+                logOnScene(e.getMessage());
+            }
+        }
     }
 
     private void setSceneVisibility(boolean isVisible) {

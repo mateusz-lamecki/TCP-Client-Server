@@ -78,7 +78,7 @@
                                         <Insets />
                                     </VBox.margin>
                                 </HBox>
-                                <ListView fx:id="subscribedListFX" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
+                                <ListView fx:id="subscribedListFX" onMouseClicked="#subscriptionSelected" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
                                     <VBox.margin>
                                         <Insets top="4.0" />
                                     </VBox.margin></ListView>
