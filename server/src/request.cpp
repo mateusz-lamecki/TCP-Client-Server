@@ -8,7 +8,7 @@ namespace sk2 {
 namespace request {
 
 
-Response LoginAction::handle(std::string request_raw, resources::Resources& res) {
+Response LoginAction::handle(std::string request_raw, resources::Resources& res, int client_fd) {
     auto words = utils::split_string(request_raw, request::DELIMITER);
     std::string user_token = res.get_user_token(words[1], words[2]);
     if(user_token != res.NON_EXISTING_TOKEN) {
@@ -19,7 +19,7 @@ Response LoginAction::handle(std::string request_raw, resources::Resources& res)
 
 }
 
-Response RegisterAction::handle(std::string request_raw, resources::Resources& res) {
+Response RegisterAction::handle(std::string request_raw, resources::Resources& res, int client_fd) {
     auto words = utils::split_string(request_raw, request::DELIMITER);
 
     bool success = res.register_user(words[1], words[2]);
@@ -32,7 +32,7 @@ Response RegisterAction::handle(std::string request_raw, resources::Resources& r
     }
 }
 
-Response PublishAction::handle(std::string request_raw, resources::Resources& res) {
+Response PublishAction::handle(std::string request_raw, resources::Resources& res, int client_fd) {
     auto words = utils::split_string(request_raw, request::DELIMITER);
     
     auto user = res.get_user(words[1]);
@@ -45,7 +45,7 @@ Response PublishAction::handle(std::string request_raw, resources::Resources& re
     }
 }
 
-Response SubscribeAction::handle(std::string request_raw, resources::Resources& res) {
+Response SubscribeAction::handle(std::string request_raw, resources::Resources& res, int client_fd) {
     auto words = utils::split_string(request_raw, request::DELIMITER);
     
     auto user = res.get_user(words[1]);
@@ -63,7 +63,7 @@ Response SubscribeAction::handle(std::string request_raw, resources::Resources& 
     return Response(std::make_unique<request::OkStatus>());
 }
 
-Response UnsubscribeAction::handle(std::string request_raw, resources::Resources& res) {
+Response UnsubscribeAction::handle(std::string request_raw, resources::Resources& res, int client_fd) {
     auto words = utils::split_string(request_raw, request::DELIMITER);
     
     auto user = res.get_user(words[1]);
@@ -81,7 +81,7 @@ Response UnsubscribeAction::handle(std::string request_raw, resources::Resources
     return Response(std::make_unique<request::OkStatus>());
 }
 
-Response ReadMessagesAction::handle(std::string request_raw, resources::Resources& res) {
+Response ReadMessagesAction::handle(std::string request_raw, resources::Resources& res, int client_fd) {
     auto words = utils::split_string(request_raw, request::DELIMITER);
 
     auto topic = res.get_topic(words[1]);
@@ -93,7 +93,7 @@ Response ReadMessagesAction::handle(std::string request_raw, resources::Resource
     return Response(std::make_unique<request::OkStatus>(), messages_in_topic);
 }
 
-Response ReadTopicsAction::handle(std::string request_raw, resources::Resources& res) {
+Response ReadTopicsAction::handle(std::string request_raw, resources::Resources& res, int client_fd) {
     auto words = utils::split_string(request_raw, request::DELIMITER);
 
     auto user = res.get_user(words[1]);
@@ -106,7 +106,7 @@ Response ReadTopicsAction::handle(std::string request_raw, resources::Resources&
     return Response(std::make_unique<request::OkStatus>(), subscribed_topics);
 }
 
-Response InvalidAction::handle(std::string request_raw, resources::Resources& res) {
+Response InvalidAction::handle(std::string request_raw, resources::Resources& res, int client_fd) {
     return Response(std::make_unique<request::OtherErrorStatus>(), "Unhandled action");
 }
 
