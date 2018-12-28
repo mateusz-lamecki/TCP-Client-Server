@@ -77,7 +77,7 @@ public class ClientController {
         for(String item : subscribedList){
             try {
                 subscriptionManager.unsubscribeSubject(item);
-                subscribedList.remove(item);
+                subscribedListFX.getItems().removeAll(item);
             } catch (IOException e) {
                 log.error(e.getMessage());
             } catch (ResponseException e) {
@@ -99,21 +99,21 @@ public class ClientController {
         primaryStage.setScene(scene);
         primaryStage.showAndWait();
     }
-//
-//    @FXML
-//    private void addNewPost() throws IOException {
-//        FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/newPost.fxml"));
-//        NewPostController loginController = new NewPostController(subscriptionManager);
-//        loader.setController(loginController);
-//        Parent root = loader.load();
-//        Stage primaryStage = new Stage();
-//        primaryStage.setTitle("New Post");
-//        Scene scene = new Scene(root, 850, 650);
-//        primaryStage.setMinWidth(650);
-//        primaryStage.setMinHeight(450);
-//        primaryStage.setScene(scene);
-//        primaryStage.showAndWait();
-//    }
+
+    @FXML
+    private void addNewPost() throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/newPost.fxml"));
+        NewPostController loginController = new NewPostController(subscriptionManager);
+        loader.setController(loginController);
+        Parent root = loader.load();
+        Stage primaryStage = new Stage();
+        primaryStage.setTitle("New Post");
+        Scene scene = new Scene(root, 850, 650);
+        primaryStage.setMinWidth(650);
+        primaryStage.setMinHeight(450);
+        primaryStage.setScene(scene);
+        primaryStage.showAndWait();
+    }
 
     private void setSceneVisibility(boolean isVisible) {
         mainContainer.setVisible(isVisible);
@@ -143,21 +143,6 @@ public class ClientController {
         Stage primaryStage = new Stage();
         primaryStage.setTitle("Login/Register");
         Scene scene = new Scene(root, 850, 750);
-        primaryStage.setMinWidth(650);
-        primaryStage.setMinHeight(450);
-        primaryStage.setScene(scene);
-        primaryStage.showAndWait();
-    }
-
-    @FXML
-    private void addNewPost() throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/newPost.fxml"));
-        NewPostController loginController = new NewPostController(subscriptionManager);
-        loader.setController(loginController);
-        Parent root = loader.load();
-        Stage primaryStage = new Stage();
-        primaryStage.setTitle("New Post");
-        Scene scene = new Scene(root, 850, 650);
         primaryStage.setMinWidth(650);
         primaryStage.setMinHeight(450);
         primaryStage.setScene(scene);

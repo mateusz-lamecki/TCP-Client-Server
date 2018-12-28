@@ -43,8 +43,14 @@ public class SubscribeController {
 			} catch (IOException e) {
 				log.error(e.getMessage());
 			} catch (ResponseException e) {
-				errorMessage.setText(e.getMessage());
-				errorMessage.setVisible(true);
+				log.info(e.getMessage());
+				if(e.getMessage().contains("INVALID_TOPIC")){
+					errorMessage.setText("The topic as not created yet");
+					errorMessage.setVisible(true);
+				}else {
+					errorMessage.setText("Unknown problem, try later");
+					errorMessage.setVisible(true);
+				}
 			}
 		} else {
 			errorMessage.setText(status.getErrorMessage());

@@ -66,7 +66,7 @@ public class SubscriptionManager {
 		}
 		connectIfNotConnected();
 		connection.write("SUBSCRIBE@@@" + loggedUser.getToken() + "@@@" + subjectName);
-		Response response = waitForResponse(Collections.singletonList("OK"), new ArrayList<>(Arrays.asList("INVALID_TOKEN", "INVALID_TOPIC")), 2);
+		Response response = waitForResponse(Collections.singletonList("OK"), new ArrayList<>(Arrays.asList("INVALID_TOKEN", "INVALID_TOPIC")), 1);
 		if (response == null) {
 			log.info("Did not receive response from the server");
 			return false;
@@ -84,7 +84,7 @@ public class SubscriptionManager {
 		}
 		connectIfNotConnected();
 		connection.write("UNSUBSCRIBE@@@" + loggedUser.getToken() + "@@@" + subjectName);
-		Response response = waitForResponse(Collections.singletonList("OK"), new ArrayList<>(Arrays.asList("INVALID_TOKEN", "INVALID_TOPIC")), 2);
+		Response response = waitForResponse(Collections.singletonList("OK"), new ArrayList<>(Arrays.asList("INVALID_TOKEN", "INVALID_TOPIC")), 1);
 		if (response == null) {
 			log.info("Did not receive response from the server");
 			return false;
@@ -128,6 +128,9 @@ public class SubscriptionManager {
 		if (!response.isOk()) {
 			throw new ResponseException("Invalid token");
 		} else {
+			if(response.getMessage().length() == 0){
+				return new ArrayList<>();
+			}
 			String[] subjects = response.getMessage().split("\\$\\$\\$");
 			return new ArrayList<>(Arrays.asList(subjects));
 		}
