@@ -70,6 +70,19 @@ public class FieldsValidator {
         return new ValidationStatus(true);
     }
 
+    public static ValidationStatus checkSubscriptionSubject(String subject){
+        if(Strings.isNullOrEmpty(subject)){
+            return new ValidationStatus(false, "Subject cannot be empty");
+        }
+        if(isStringContainValues(subject, ILLEGAL_CHARACTERS)){
+            return new ValidationStatus(false, "Subject have to be alphanumeric");
+        }
+        if (subject.length() > 50) {
+            return new ValidationStatus(false, "Maximum subject length is 50 characters including end of lines");
+        }
+        return new ValidationStatus(true);
+    }
+
     private static ValidationStatus checkContainsSeparator(String field) {
         if (field.contains("@@@")) {
             return new ValidationStatus(false, "Cannot contains \"@@@\"");

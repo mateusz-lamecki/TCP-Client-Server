@@ -5,6 +5,7 @@ import com.skdwa.subscriptions.ResponseException;
 import com.skdwa.subscriptions.SubscriptionManager;
 import com.skdwa.tcp.login.LoginController;
 import com.skdwa.tcp.post.NewPostController;
+import com.skdwa.tcp.subscribe.SubscribeController;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
@@ -18,10 +19,12 @@ import javafx.scene.control.ListView;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
+import java.util.List;
 
-//@Slf4j
+@Slf4j
 public class ClientController {
     private SubscriptionManager subscriptionManager = new SubscriptionManager();
 
@@ -68,6 +71,49 @@ public class ClientController {
             }
         }
     }
+    @FXML
+    private void unsubscribeSelected(){
+        List<String> subscribedList = subscribedListFX.getSelectionModel().getSelectedItems();
+        for(String item : subscribedList){
+            try {
+                subscriptionManager.unsubscribeSubject(item);
+                subscribedList.remove(item);
+            } catch (IOException e) {
+                log.error(e.getMessage());
+            } catch (ResponseException e) {
+                log.error(e.getMessage());
+                logOnScene(e.getMessage(), 10);
+            }
+        }
+    }
+
+    @FXML
+    private void subscribeNewSubject() throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/subscribe.fxml"));
+        SubscribeController subscribeController = new SubscribeController(subscriptionManager, subscribedListFX);
+        loader.setController(subscribeController);
+        Parent root = loader.load();
+        Stage primaryStage = new Stage();
+        primaryStage.setTitle("Subscribe new subject");
+        Scene scene = new Scene(root);
+        primaryStage.setScene(scene);
+        primaryStage.showAndWait();
+    }
+//
+//    @FXML
+//    private void addNewPost() throws IOException {
+//        FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/newPost.fxml"));
+//        NewPostController loginController = new NewPostController(subscriptionManager);
+//        loader.setController(loginController);
+//        Parent root = loader.load();
+//        Stage primaryStage = new Stage();
+//        primaryStage.setTitle("New Post");
+//        Scene scene = new Scene(root, 850, 650);
+//        primaryStage.setMinWidth(650);
+//        primaryStage.setMinHeight(450);
+//        primaryStage.setScene(scene);
+//        primaryStage.showAndWait();
+//    }
 
     private void setSceneVisibility(boolean isVisible) {
         mainContainer.setVisible(isVisible);

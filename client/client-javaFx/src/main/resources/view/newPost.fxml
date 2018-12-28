@@ -45,7 +45,7 @@
                <children>
                   <AnchorPane VBox.vgrow="ALWAYS">
                      <children>
-                        <TextArea fx:id="contentFX" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="8.0" AnchorPane.rightAnchor="80.0" AnchorPane.topAnchor="8.0" />
+                        <TextArea fx:id="contentFX" prefHeight="200.0" prefWidth="200.0" wrapText="true" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="8.0" AnchorPane.rightAnchor="80.0" AnchorPane.topAnchor="8.0" />
                         <VBox layoutX="541.0" layoutY="269.0" prefHeight="69.0" prefWidth="68.0" AnchorPane.bottomAnchor="8.0" AnchorPane.rightAnchor="8.0">
                            <children>
                               <Button fx:id="sendButton" contentDisplay="RIGHT" mnemonicParsing="false" nodeOrientation="LEFT_TO_RIGHT" onAction="#sendButtonAction" prefHeight="26.0" prefWidth="72.0" text="Send" VBox.vgrow="ALWAYS">
