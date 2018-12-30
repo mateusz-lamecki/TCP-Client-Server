@@ -13,6 +13,7 @@ import javafx.application.Platform;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -63,6 +64,7 @@ public class ClientController implements Observer {
 
     @FXML
     private void initialize() {
+        subscriptionManager.addObserverWithMessage(this, "PING");
 		subscribedTableViewFX.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
 		tableViewSubject.setCellValueFactory(cellData -> cellData.getValue().getSubject());
 		tableViewUpdated.setCellValueFactory(cellData -> cellData.getValue().getIsUpdated());
@@ -193,8 +195,17 @@ public class ClientController implements Observer {
 
 	@Override
 	public void update(String message, String content) {
-		if(message.equalsIgnoreCase("PING")){
-			//todo new subject updated
-		}
+        log.info("Received update message", message, content);
+        if(message.equalsIgnoreCase("PING")){
+            for(SubscriptionItem item :subscribedSubjectsData){
+                if(item.getSubject().getValue().equalsIgnoreCase(content)){
+                    item.setIsUpdated(new SimpleBooleanProperty(true));
+                    int index = subscribedSubjectsData.indexOf(item);
+                    subscribedSubjectsData.set(index, item);
+                    log.debug("Updated list on {} index with {} value", index, item.getSubject().getValue());
+                    break;
+                }
+            }
+        }
 	}
 }

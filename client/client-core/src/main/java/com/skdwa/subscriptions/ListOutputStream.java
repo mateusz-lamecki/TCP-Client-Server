@@ -6,18 +6,22 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 @Slf4j
 public class ListOutputStream extends OutputStream implements MessageObservable {
 	private final List<String> list;
+	private List<String> pingList;
 	private Map<Observer, List<String>> observersWithMessages = new HashMap<>();
 
 	public ListOutputStream(List<String> list) {
 		super();
 		this.list = list;
+	}
+
+	public void addPingList(List<String> pingList){
+		this.pingList = pingList;
 	}
 
 	@Override
@@ -35,17 +39,22 @@ public class ListOutputStream extends OutputStream implements MessageObservable 
 	public void write(byte[] b) throws IOException {
 		super.write(b);
 		String message = new String(b);
+		AtomicBoolean isListenerValue = new AtomicBoolean(false);
 		String[] splitted = message.split("@{3}", 2);
 		observersWithMessages.forEach((key, value) -> {
 			if (value.contains(splitted[0])) {
+				log.info("PING UPDATE IN STREAM!!!");
 				if (splitted.length == 1) {
 					key.update(splitted[0], "");
 				} else {
 					key.update(splitted[0], splitted[1]);
 				}
+				isListenerValue.set(true);
 			}
 		});
-		list.add(message);
+		if(!isListenerValue.get()) {
+			list.add(message);
+		}
 	}
 
 	@Override
@@ -57,7 +66,7 @@ public class ListOutputStream extends OutputStream implements MessageObservable 
 				log.info("Message: '{}' listens to {}", message, observer.toString());
 			}
 		} else {
-			log.info("Start listens fails because {} listen {}", observer, message);
+			observersWithMessages.put(observer, new ArrayList<>(Collections.singleton(message)));
 		}
 	}
 

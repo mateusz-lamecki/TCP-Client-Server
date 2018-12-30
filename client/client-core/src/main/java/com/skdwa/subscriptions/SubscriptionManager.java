@@ -1,6 +1,8 @@
 package com.skdwa.subscriptions;
 
 import com.google.common.base.Strings;
+import com.skdwa.subscriptions.observer.MessageObservable;
+import com.skdwa.subscriptions.observer.Observer;
 import com.skdwa.tcp.Connection;
 import com.skdwa.tcp.TCPConnection;
 import lombok.Getter;
@@ -60,7 +62,7 @@ public class SubscriptionManager {
 		}
 	}
 
-	public boolean subscribeSubject(String subjectName) throws IOException, ResponseException { //todo test it and make UI
+	public boolean subscribeSubject(String subjectName) throws IOException, ResponseException {
 		if (!isUserLogged()) {
 			throw new IllegalStateException("User is not logged");
 		}
@@ -78,7 +80,7 @@ public class SubscriptionManager {
 		}
 	}
 
-	public boolean unsubscribeSubject(String subjectName) throws IOException, ResponseException { //todo test it and make UI
+	public boolean unsubscribeSubject(String subjectName) throws IOException, ResponseException {
 		if (!isUserLogged()) {
 			throw new IllegalStateException("User is not logged");
 		}
@@ -96,7 +98,7 @@ public class SubscriptionManager {
 		}
 	}
 
-	public boolean publish(String subject, String content) throws IOException, ResponseException { //todo: test it
+	public boolean publish(String subject, String content) throws IOException, ResponseException {
 		if(!isUserLogged()){
 			throw new IllegalStateException("User is not logged");
 		}
@@ -164,6 +166,11 @@ public class SubscriptionManager {
 		this.connection = new TCPConnection(host, port, outputStream);
 	}
 
+	public void addObserverWithMessage(Observer observer, String message){
+		MessageObservable observable = (MessageObservable) this.outputStream;
+		observable.addObserverToMessage(observer, message);
+	}
+
 	private Response waitForResponse(String okMessage, String wrongMessage, int numberOfResponseMessages) {
 		return waitForResponse(new ArrayList<>(Collections.singletonList(okMessage)), new ArrayList<>(Collections.singletonList(wrongMessage)), numberOfResponseMessages);
 	}
@@ -193,7 +200,7 @@ public class SubscriptionManager {
 				}
 			}
 			try {
-				Thread.sleep(200);
+				Thread.sleep(2000);
 			} catch (InterruptedException e) {
 				log.error(e.getMessage());
 			}
