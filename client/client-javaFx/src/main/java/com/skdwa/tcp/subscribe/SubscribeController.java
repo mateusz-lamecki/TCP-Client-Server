@@ -2,11 +2,12 @@ package com.skdwa.tcp.subscribe;
 
 import com.skdwa.subscriptions.ResponseException;
 import com.skdwa.subscriptions.SubscriptionManager;
+import com.skdwa.tcp.SubscriptionItem;
 import com.skdwa.tcp.validate.FieldsValidator;
 import com.skdwa.tcp.validate.ValidationStatus;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -14,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
+import java.util.List;
 
 
 @Slf4j
@@ -21,7 +23,7 @@ import java.io.IOException;
 public class SubscribeController {
 
 	private final SubscriptionManager manager;
-	private final ListView<String> subscriptionList;
+	private final List<SubscriptionItem> subscriptionList;
 
 	@FXML
 	private VBox mainContainer;
@@ -34,11 +36,19 @@ public class SubscribeController {
 
 	@FXML
 	private void subscribeSubject() {
-		ValidationStatus status = FieldsValidator.checkSubscriptionSubject(subjectNameFX.getText());
+		String newSubjectName = subjectNameFX.getText();
+		for(SubscriptionItem item : subscriptionList){
+			if(item.getSubject().getValue().equals(newSubjectName)){
+				errorMessage.setText("The topic is already subscribed!");
+				errorMessage.setVisible(true);
+				return;
+			}
+		}
+		ValidationStatus status = FieldsValidator.checkSubscriptionSubject(newSubjectName);
 		if (status.isValid()) {
 			try {
-				manager.subscribeSubject(subjectNameFX.getText());
-				subscriptionList.getItems().add(subjectNameFX.getText());
+				manager.subscribeSubject(newSubjectName);
+				subscriptionList.add(new SubscriptionItem(newSubjectName, true));
 				exit();
 			} catch (IOException e) {
 				log.error(e.getMessage());

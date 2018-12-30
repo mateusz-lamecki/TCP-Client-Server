@@ -3,21 +3,22 @@ package com.skdwa.tcp;
 import com.google.common.base.Strings;
 import com.skdwa.subscriptions.ResponseException;
 import com.skdwa.subscriptions.SubscriptionManager;
+import com.skdwa.subscriptions.observer.Observer;
 import com.skdwa.tcp.login.LoginController;
 import com.skdwa.tcp.post.NewPostController;
 import com.skdwa.tcp.subscribe.SubscribeController;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
-import javafx.scene.control.SelectionMode;
-import javafx.scene.input.MouseEvent;
+import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.util.Duration;
@@ -25,9 +26,10 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
-public class ClientController {
+public class ClientController implements Observer {
     private SubscriptionManager subscriptionManager = new SubscriptionManager();
 
     private Connection connection = null;
@@ -43,7 +45,12 @@ public class ClientController {
     private ListView<String> articlesListFX;
 
     @FXML
-    private ListView<String> subscribedListFX;
+    private TableView<SubscriptionItem> subscribedTableViewFX;
+    @FXML
+    private TableColumn<SubscriptionItem, String> tableViewSubject;
+    @FXML
+    private TableColumn<SubscriptionItem, Boolean> tableViewUpdated;
+    private ObservableList<SubscriptionItem> subscribedSubjectsData = FXCollections.observableArrayList();
 
     @FXML
     private Button subscribeNewButtonFX;
@@ -56,6 +63,10 @@ public class ClientController {
 
     @FXML
     private void initialize() {
+		subscribedTableViewFX.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+		tableViewSubject.setCellValueFactory(cellData -> cellData.getValue().getSubject());
+		tableViewUpdated.setCellValueFactory(cellData -> cellData.getValue().getIsUpdated());
+		subscribedTableViewFX.setItems(subscribedSubjectsData);
         try {
             setSceneVisibility(false);
             boolean isLogged = logInUser();
@@ -63,7 +74,11 @@ public class ClientController {
                 ((Stage) mainContainer.getScene().getWindow()).close();
             }
             welcomeLabel.setText("Welcome, " + subscriptionManager.getLoggedUser().getUsername());
-            subscribedListFX.getItems().addAll(subscriptionManager.getUserSubscriptions());
+            List<String> subscribedSubjects = subscriptionManager.getUserSubscriptions();
+            subscribedSubjectsData.addAll(subscribedSubjects
+					.stream()
+					.map(e -> new SubscriptionItem(e, false))
+					.collect(Collectors.toList()));
             mainContainer.resize(680, 600);
         } catch (IOException | ResponseException e) {
             e.printStackTrace();
@@ -71,17 +86,16 @@ public class ClientController {
             if (!Strings.isNullOrEmpty(subscriptionManager.getLoggedUser().getToken())) {
                 setSceneVisibility(true);
             }
-            subscribedListFX.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
         }
     }
 
     @FXML
     private void unsubscribeSelected(){
-        List<String> subscribedList = subscribedListFX.getSelectionModel().getSelectedItems();
-        for(String item : subscribedList){
+        List<SubscriptionItem> subscribedList = subscribedTableViewFX.getSelectionModel().getSelectedItems();
+        for(SubscriptionItem item : subscribedList){
             try {
-                subscriptionManager.unsubscribeSubject(item);
-                subscribedListFX.getItems().removeAll(item);
+                subscriptionManager.unsubscribeSubject(item.getSubject().getValue());
+                subscribedSubjectsData.remove(item);
             } catch (IOException e) {
                 log.error(e.getMessage());
             } catch (ResponseException e) {
@@ -94,7 +108,7 @@ public class ClientController {
     @FXML
     private void subscribeNewSubject() throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/subscribe.fxml"));
-        SubscribeController subscribeController = new SubscribeController(subscriptionManager, subscribedListFX);
+        SubscribeController subscribeController = new SubscribeController(subscriptionManager, subscribedSubjectsData);
         loader.setController(subscribeController);
         Parent root = loader.load();
         Stage primaryStage = new Stage();
@@ -122,12 +136,19 @@ public class ClientController {
     @FXML
     private void subscriptionSelected(){
         log.debug("Subscription selected");
-        List<String> items = subscribedListFX.getSelectionModel().getSelectedItems();
+        List<SubscriptionItem> items = subscribedTableViewFX.getSelectionModel().getSelectedItems();
         if(items.size() == 1){
             try {
-                List<String> messages = subscriptionManager.getAllMessages(items.get(0));
+                List<String> messages = subscriptionManager.getAllMessages(items.get(0).getSubject().getValue());
                 articlesListFX.getItems().clear();
                 articlesListFX.getItems().addAll(messages);
+                for (SubscriptionItem item : subscribedSubjectsData) {
+                    if(item.equals(items.get(0))){
+                        item.setIsUpdated(new SimpleBooleanProperty(false));
+                    }
+                }
+//                subscribedSubjectsData.remove(items.get(0));
+//                subscribedSubjectsData.add(new SubscriptionItem(items.get(0).getSubject(), items.get(0).getIsUpdated()));
             } catch (IOException e) {
                 log.error(e.getMessage());
             } catch (ResponseException e) {
@@ -169,4 +190,11 @@ public class ClientController {
         primaryStage.setScene(scene);
         primaryStage.showAndWait();
     }
+
+	@Override
+	public void update(String message, String content) {
+		if(message.equalsIgnoreCase("PING")){
+			//todo new subject updated
+		}
+	}
 }

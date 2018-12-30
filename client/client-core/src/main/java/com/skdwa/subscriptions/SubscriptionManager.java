@@ -131,7 +131,7 @@ public class SubscriptionManager {
 			if(response.getMessage().length() == 0){
 				return new ArrayList<>();
 			}
-			String[] subjects = response.getMessage().split("\\$\\$\\$");
+			String[] subjects = response.getMessage().split("@{3}");
 			return new ArrayList<>(Arrays.asList(subjects));
 		}
 	}
@@ -174,7 +174,7 @@ public class SubscriptionManager {
 			for (int l = 0; l < messages.size(); l++) {
 				String message = messages.get(l);
 				if (okMessages.stream().anyMatch(message::contains)) {
-					String[] splitted = message.split("@@@");
+					String[] splitted = message.split("@@@",2);
 					if (numberOfResponseMessages > 0 && splitted.length != numberOfResponseMessages) {
 						throw new IllegalStateException("Cannot find token in server response");
 					}

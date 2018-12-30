@@ -88,8 +88,7 @@ public class LoginController {
             }
             boolean signUpSuccessful = subscriptionManager.signUp(login, password);
             if (signUpSuccessful) {
-                infoFx.setText("Register successful");
-                infoFx.setTextFill(Color.GREEN);
+                exitScene();
             } else {
                 infoFx.setText("Register unsuccessful");
                 infoFx.setTextFill(Color.RED);
