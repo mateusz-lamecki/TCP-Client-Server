@@ -12,6 +12,7 @@ import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.value.ObservableValueBase;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
@@ -20,6 +21,8 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.util.Duration;
@@ -36,6 +39,8 @@ public class ClientController implements Observer {
     private Connection connection = null;
     private boolean isConnected = false;
 
+    private static final ImageView IMAGE_UPDATED = new ImageView("icons/new.png");
+
     @FXML
     private VBox mainContainer;
     @FXML
@@ -50,7 +55,7 @@ public class ClientController implements Observer {
     @FXML
     private TableColumn<SubscriptionItem, String> tableViewSubject;
     @FXML
-    private TableColumn<SubscriptionItem, Boolean> tableViewUpdated;
+    private TableColumn<SubscriptionItem, ImageView> tableViewUpdated;
     private ObservableList<SubscriptionItem> subscribedSubjectsData = FXCollections.observableArrayList();
 
     @FXML
@@ -67,7 +72,17 @@ public class ClientController implements Observer {
         subscriptionManager.addObserverWithMessage(this, "PING");
 		subscribedTableViewFX.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
 		tableViewSubject.setCellValueFactory(cellData -> cellData.getValue().getSubject());
-		tableViewUpdated.setCellValueFactory(cellData -> cellData.getValue().getIsUpdated());
+		tableViewUpdated.setCellValueFactory(cellData -> {
+		    if(cellData.getValue().getIsUpdated().get()){
+		        return new ObservableValueBase<ImageView>() {
+                    @Override
+                    public ImageView getValue() {
+                        return IMAGE_UPDATED;
+                    }
+                };
+            }
+		    else return null;
+        });
 		subscribedTableViewFX.setItems(subscribedSubjectsData);
         try {
             setSceneVisibility(false);
@@ -137,9 +152,9 @@ public class ClientController implements Observer {
 
     @FXML
     private void subscriptionSelected(){
-        log.debug("Subscription selected");
         List<SubscriptionItem> items = subscribedTableViewFX.getSelectionModel().getSelectedItems();
         if(items.size() == 1){
+            log.debug("Subscription selected");
             try {
                 List<String> messages = subscriptionManager.getAllMessages(items.get(0).getSubject().getValue());
                 articlesListFX.getItems().clear();
@@ -147,6 +162,8 @@ public class ClientController implements Observer {
                 for (SubscriptionItem item : subscribedSubjectsData) {
                     if(item.equals(items.get(0))){
                         item.setIsUpdated(new SimpleBooleanProperty(false));
+                        int index = subscribedSubjectsData.indexOf(item);
+                        subscribedSubjectsData.set(index, item);
                     }
                 }
 //                subscribedSubjectsData.remove(items.get(0));
