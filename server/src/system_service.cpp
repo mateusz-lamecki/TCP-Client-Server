@@ -4,6 +4,8 @@
 
 namespace sk2 {
 
+SystemService::SystemService() { }
+
 request::Response SystemService::handle_request(std::string request_raw, int client_fd) {
     auto words = utils::split_string(request_raw, request::DELIMITER);
 

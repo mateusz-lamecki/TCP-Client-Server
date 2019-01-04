@@ -114,6 +114,14 @@ void Resources::publish_message(std::string topic_id, std::string message) {
         topics[topic_id] = Topic(topic_id);
     }
 
+    for(auto x : users) {
+        auto topics_subscribed = x.second.get_topics_subscribed();
+        if(topics_subscribed.find(topic_id) != topics_subscribed.end()) {
+            ping_user_topic.push_back(std::make_pair(x.first, topic_id));
+        }
+    }
+
+
     topics[topic_id].add_message(message);
 }
 
@@ -124,6 +132,10 @@ std::optional<Topic> Resources::get_topic(std::string topic_id) {
 
 bool Resources::is_topic(std::string topic_id) {
     return topics.find(topic_id) != topics.end();
+}
+
+std::vector<std::pair<std::string, std::string>> Resources::get_ping_user_topic() {
+    return ping_user_topic;
 }
 
 } // namespace resources

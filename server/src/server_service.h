@@ -4,6 +4,7 @@
 #include <vector>
 #include <string>
 #include <thread>
+#include <mutex>
 
 #include "connection.h"
 #include "system_service.h"

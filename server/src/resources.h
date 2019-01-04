@@ -4,6 +4,8 @@
 #include <memory>
 #include <string>
 #include <vector>
+#include <thread>
+#include <mutex>
 #include <map>
 #include <set>
 
@@ -41,9 +43,11 @@ class User {
     std::string password;
 };
 
+
 class Resources {
     public:
     Resources();
+    Resources(const Resources&) = delete;
 
     void set_logged_client(int client_id, std::string login_id);
     void remove_logged_client(int client_id);
@@ -60,9 +64,13 @@ class Resources {
     std::optional<Topic> get_topic(std::string topic_id);
     bool is_topic(std::string topic_id);
 
+    const std::mutex mutex_ping_user_topic;
+    std::vector<std::pair<std::string, std::string>> get_ping_user_topic();
+
     const std::string NON_EXISTING_TOKEN = "KDKFMF-NON-EXISTING-ASDASD";
 
     private:
+    std::vector<std::pair<std::string, std::string>> ping_user_topic;
     std::map<int,std::string> logged_clients;
     std::map<std::string, Topic> topics; // TODO: change to unordered_set
     std::map<std::string, User> users; // TODO: change to unordered_set
