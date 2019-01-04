@@ -1,4 +1,5 @@
 #include "resources.h"
+#include <cstdio>
 
 #include "utils.h"
 
@@ -65,6 +66,8 @@ bool User::operator <(const User &rhs) const {
 Resources::Resources() {
     // TODO: remove!
     users["mateusz"] = User("mateusz", "pass");
+    users["bartek"] = User("bartek", "pass");
+    users["maria"] = User("maria", "ebe");
 }
 
 void Resources::set_logged_client(int client_id, std::string login_id) {
@@ -74,6 +77,10 @@ void Resources::set_logged_client(int client_id, std::string login_id) {
 void Resources::remove_logged_client(int client_id) {
     auto it = logged_clients.find(client_id);
     if(it != logged_clients.end()) logged_clients.erase(it);
+}
+
+std::map<int,std::string>& Resources::get_logged_clients() {
+    return logged_clients;
 }
 
 bool Resources::register_user(std::string login, std::string password) {
@@ -114,12 +121,14 @@ void Resources::publish_message(std::string topic_id, std::string message) {
         topics[topic_id] = Topic(topic_id);
     }
 
+    mutex_ping_user_topic.lock();
     for(auto x : users) {
         auto topics_subscribed = x.second.get_topics_subscribed();
         if(topics_subscribed.find(topic_id) != topics_subscribed.end()) {
-            ping_user_topic.push_back(std::make_pair(x.first, topic_id));
+            ping_user_topic[x.first].push_back(topic_id);
         }
     }
+    mutex_ping_user_topic.unlock();
 
 
     topics[topic_id].add_message(message);
@@ -134,7 +143,7 @@ bool Resources::is_topic(std::string topic_id) {
     return topics.find(topic_id) != topics.end();
 }
 
-std::vector<std::pair<std::string, std::string>> Resources::get_ping_user_topic() {
+std::map<std::string, std::vector<std::string>>& Resources::get_ping_user_topic() {
     return ping_user_topic;
 }
 

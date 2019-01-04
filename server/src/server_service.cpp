@@ -1,5 +1,8 @@
 #include "server_service.h"
 
+#include <cstdio>
+#include "resources.h"
+
 
 namespace sk2 {
 
@@ -9,12 +12,28 @@ ServerService::ServerService(int server_port) {
 }
 
 void ServerService::run() {
-    std::thread pings_thread(handle_pings);
+    std::thread pings_thread(handle_pings, this);
     connection->run();
 }
 
-void ServerService::handle_pings() {
+void ServerService::handle_pings(ServerService* server_service) {
     while(true) {
+        std::this_thread::sleep_for(std::chrono::milliseconds(200));
+        auto &res = server_service->system_service->get_res();
+
+        res.mutex_ping_user_topic.lock();
+        for(auto x : res.get_logged_clients()) {
+
+            auto &ping_user_topic = res.get_ping_user_topic();
+            for(std::string topic_id : ping_user_topic[x.second]) {
+                std::string message = "PING" + request::DELIMITER + topic_id + "\n";
+                Connection::write_to_client(x.first, message);
+                
+            }
+            ping_user_topic[x.second].clear();
+        }
+
+        res.mutex_ping_user_topic.unlock();
     }
 }
 

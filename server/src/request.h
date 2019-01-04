@@ -25,6 +25,8 @@ class Response {
     public:
     Response(std::unique_ptr<Status> status, std::string auxilary_out="");
     std::string to_string();
+    std::string& get_status();
+    std::string& get_auxilary_out();
 
     private:
     std::string status_str;

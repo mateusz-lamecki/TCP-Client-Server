@@ -169,6 +169,14 @@ std::string Response::to_string() {
     return status_str + DELIMITER + auxilary_out;
 }
 
+std::string& Response::get_status() {
+    return status_str;
+}
+
+std::string& Response::get_auxilary_out() {
+    return auxilary_out;
+}
+
 } // namespace request
 
 } // namespace sk2
