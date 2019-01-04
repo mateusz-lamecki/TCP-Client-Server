@@ -26,11 +26,6 @@
                         <MenuItem mnemonicParsing="false" onAction="#addNewPost" text="New Post" />
                     </items>
                 </Menu>
-                <Menu mnemonicParsing="false" text="Help">
-                    <items>
-                        <MenuItem mnemonicParsing="false" text="About MyHelloApp" />
-                    </items>
-                </Menu>
             </menus>
         </MenuBar>
         <SplitPane dividerPositions="0.2505567928730512, 0.7505567928730512" focusTraversable="true" prefHeight="-1.0" prefWidth="-1.0" VBox.vgrow="ALWAYS">

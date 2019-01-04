@@ -32,7 +32,7 @@ public class SubscriptionManager {
 	public boolean signUp(String login, String password) throws IOException, LoginIsAlreadyTakenException {
 		connectIfNotConnected();
 		connection.write("REGISTER@@@" + login + "@@@" + password);
-		Response response = waitForResponse("OK", "LOGIN_TAKEN", 2);
+		Response response = waitForResponse("OK", "LOGIN_TAKEN");
 		if (response == null) {
 			log.info("{} login failed, did not receive response from the server", login);
 			return false;
@@ -49,7 +49,7 @@ public class SubscriptionManager {
 		connectIfNotConnected();
 		connection.write("LOGIN@@@" + login + "@@@" + password);
 		byte i = 0;
-		Response response = waitForResponse("OK", "INVALID_PASSWORD", 2);
+		Response response = waitForResponse("OK", "INVALID_PASSWORD");
 		if (response == null) {
 			log.info("{} login failed, did not receive response from the server", login);
 			return false;
@@ -68,7 +68,7 @@ public class SubscriptionManager {
 		}
 		connectIfNotConnected();
 		connection.write("SUBSCRIBE@@@" + loggedUser.getToken() + "@@@" + subjectName);
-		Response response = waitForResponse(Collections.singletonList("OK"), new ArrayList<>(Arrays.asList("INVALID_TOKEN", "INVALID_TOPIC")), 1);
+		Response response = waitForResponse(Collections.singletonList("OK"), new ArrayList<>(Arrays.asList("INVALID_TOKEN", "INVALID_TOPIC")));
 		if (response == null) {
 			log.info("Did not receive response from the server");
 			return false;
@@ -86,7 +86,7 @@ public class SubscriptionManager {
 		}
 		connectIfNotConnected();
 		connection.write("UNSUBSCRIBE@@@" + loggedUser.getToken() + "@@@" + subjectName);
-		Response response = waitForResponse(Collections.singletonList("OK"), new ArrayList<>(Arrays.asList("INVALID_TOKEN", "INVALID_TOPIC")), 1);
+		Response response = waitForResponse(Collections.singletonList("OK"), new ArrayList<>(Arrays.asList("INVALID_TOKEN", "INVALID_TOPIC")));
 		if (response == null) {
 			log.info("Did not receive response from the server");
 			return false;
@@ -104,7 +104,7 @@ public class SubscriptionManager {
 		}
 		connectIfNotConnected();
 		connection.write("PUBLISH@@@" + loggedUser.getToken() + "@@@" + subject + "@@@" + content);
-		Response response = waitForResponse("OK", "INVALID_TOKEN", 1);
+		Response response = waitForResponse("OK", "INVALID_TOKEN");
 		if (response == null) {
 			log.info("Did not receive response from the server");
 			return false;
@@ -122,7 +122,7 @@ public class SubscriptionManager {
 		}
 		connectIfNotConnected();
 		connection.write("READ_TOPICS@@@" + loggedUser.getToken());
-		Response response = waitForResponse("OK", "INVALID_TOKEN", -1);
+		Response response = waitForResponse("OK", "INVALID_TOKEN");
 		if (response == null) {
 			log.info("Did not receive response from the server");
 			return null;
@@ -144,7 +144,7 @@ public class SubscriptionManager {
 		}
 		connectIfNotConnected();
 		connection.write("READ_MESSAGES@@@" + subject);
-		Response response = waitForResponse("OK", "INVALID_TOPIC", -1);
+		Response response = waitForResponse("OK", "INVALID_TOPIC");
 		if (response == null) {
 			log.info("Did not receive response from the server");
 			return null;
@@ -171,10 +171,17 @@ public class SubscriptionManager {
 		observable.addObserverToMessage(observer, message);
 	}
 
+	private Response waitForResponse(String okMessage, String wrongMessage){
+		return waitForResponse(okMessage, wrongMessage, -1);
+	}
+
 	private Response waitForResponse(String okMessage, String wrongMessage, int numberOfResponseMessages) {
 		return waitForResponse(new ArrayList<>(Collections.singletonList(okMessage)), new ArrayList<>(Collections.singletonList(wrongMessage)), numberOfResponseMessages);
 	}
 
+	private Response waitForResponse(List<String> okMessages, List<String> wrongMessages){
+		return waitForResponse(okMessages, wrongMessages, -1);
+	}
 	private Response waitForResponse(List<String> okMessages, List<String> wrongMessages, int numberOfResponseMessages) {
 		int i = 0;
 		while (i++ < 10) {
@@ -200,7 +207,7 @@ public class SubscriptionManager {
 				}
 			}
 			try {
-				Thread.sleep(2000);
+				Thread.sleep(300);
 			} catch (InterruptedException e) {
 				log.error(e.getMessage());
 			}
