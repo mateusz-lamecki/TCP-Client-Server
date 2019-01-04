@@ -22,14 +22,14 @@ void ServerService::handle_pings(ServerService* server_service) {
         auto &res = server_service->system_service->get_res();
 
         res.mutex_ping_user_topic.lock();
-        for(auto x : res.get_logged_clients()) {
 
+        for(auto x : res.get_logged_clients()) {
             auto &ping_user_topic = res.get_ping_user_topic();
             for(std::string topic_id : ping_user_topic[x.second]) {
                 std::string message = "PING" + request::DELIMITER + topic_id + "\n";
                 Connection::write_to_client(x.first, message);
-                
             }
+
             ping_user_topic[x.second].clear();
         }
 

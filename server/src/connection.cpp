@@ -66,7 +66,7 @@ void *Connection::wrap_pthread_create(void *content) {
 
 void Connection::write_to_client(int client_fd, std::string response_str) {
     std::cerr << "Client #" << client_fd << ": sending " << response_str;
-    write(client_fd, response_str.c_str(), sizeof(char)*response_str.size());
+    send(client_fd, response_str.c_str(), sizeof(char)*response_str.size(), MSG_NOSIGNAL);
 }
 
 void Connection::handle_client(int client_fd) {
