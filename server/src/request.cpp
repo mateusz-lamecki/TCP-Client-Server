@@ -56,11 +56,6 @@ Response SubscribeAction::handle(std::string request_raw, resources::Resources& 
         return Response(std::make_unique<request::InvalidTokenStatus>());
     }
 
-    // Check whether provided topic exists
-    if(!res.is_topic(words[2])) {
-        return Response(std::make_unique<request::InvalidTopicStatus>());
-    }
-
     res.subscribe_topic(words[1], words[2]);
     return Response(std::make_unique<request::OkStatus>());
 }
@@ -74,11 +69,6 @@ Response UnsubscribeAction::handle(std::string request_raw, resources::Resources
         return Response(std::make_unique<request::InvalidTokenStatus>());
     }
 
-    // Check whether provided topic exists
-    if(!res.is_topic(words[2])) {
-        return Response(std::make_unique<request::InvalidTopicStatus>());
-    }
-
     res.unsubscribe_topic(words[1], words[2]);
     return Response(std::make_unique<request::OkStatus>());
 }
@@ -88,7 +78,8 @@ Response ReadMessagesAction::handle(std::string request_raw, resources::Resource
 
     auto topic = res.get_topic(words[1]);
     if(!topic.has_value()) {
-        return Response(std::make_unique<request::InvalidTopicStatus>());
+        topic = std::make_optional<resources::Topic>(words[1]);
+        // return Response(std::make_unique<request::InvalidTopicStatus>());
     }
 
     std::string messages_in_topic = topic.value().messages_to_str(request::DELIMITER2);
