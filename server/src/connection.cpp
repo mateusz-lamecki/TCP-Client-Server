@@ -1,6 +1,8 @@
 #include "connection.h"
 
+#include <algorithm>
 #include <iostream>
+#include "utils.h"
 
 
 namespace sk2 {
@@ -14,6 +16,8 @@ std::string read_input(int connection_desc) {
 
     std::string result(buffer);
     delete[] buffer;
+
+    result.erase(std::remove(result.begin(), result.end(), '\n'), result.end());
 
     return result;
 }
@@ -47,6 +51,8 @@ Connection::Connection(int server_port, std::shared_ptr<SystemService> system_se
         fprintf(stderr, "Błąd przy próbie ustawienia wielkości kolejki.\n");
         exit(1);
     }
+
+    std::cerr << "Server is running on port " << server_port << std::endl;
 }
 
 void *Connection::wrap_pthread_create(void *content) {
@@ -58,26 +64,31 @@ void *Connection::wrap_pthread_create(void *content) {
     pthread_exit(NULL);
 }
 
+void Connection::write_to_client(int client_fd, std::string response_str) {
+    std::cerr << "Client #" << client_fd << ": sending " << response_str;
+    write(client_fd, response_str.c_str(), sizeof(char)*response_str.size());
+}
+
 void Connection::handle_client(int client_fd) {
     /* This function is called once during thread initiation */
-    std::cout << "Established connection with client #" << client_fd << std::endl;
+    std::cout << "Client #" << client_fd << ": connection established" << std::endl;
 
     while(true) {
         std::string input = input::read_input(client_fd);
         if(input.empty()) {
             /* connection lost */
-            std::cout << "Lost connection with client #" << client_fd << std::endl;
+            std::cout << "Client #" << client_fd << ": connection lost" << std::endl;
             return;
         } else {
-		std::cout << "Received from client #" << client_fd << ": " << input << std::endl;
-	}
+            std::cout << "Client #" << client_fd << ": received " << input << std::endl;
+        }
 
-        request::Response response = system_service->handle_request(input);
+        request::Response response = system_service->handle_request(input, client_fd);
+
         std::string response_str = response.to_string() + "\n";
-        write(client_fd, response_str.c_str(), sizeof(char)*response_str.size());
+        write_to_client(client_fd, response_str);
     }
 }
-
 
 void Connection::run() {
     while(true) {

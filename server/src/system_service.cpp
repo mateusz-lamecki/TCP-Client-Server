@@ -4,7 +4,9 @@
 
 namespace sk2 {
 
-request::Response SystemService::handle_request(std::string request_raw) {
+SystemService::SystemService() { }
+
+request::Response SystemService::handle_request(std::string request_raw, int client_fd) {
     auto words = utils::split_string(request_raw, request::DELIMITER);
 
     std::unique_ptr<request::Action> action = request::Action::detect_action(words[0]);
@@ -17,10 +19,12 @@ request::Response SystemService::handle_request(std::string request_raw) {
         return request::Response(std::make_unique<request::OtherErrorStatus>(), "Incorrect number of params");
     }
 
-    auto response_of_action = action->handle(request_raw, this->res);
+    auto response_of_action = action->handle(request_raw, this->res, client_fd);
     return response_of_action;
-
 }
 
+resources::Resources& SystemService::get_res() {
+    return res;
+}
 
 } // namespace sk2

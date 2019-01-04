@@ -3,10 +3,12 @@
 #include <memory>
 #include <vector>
 #include <string>
+#include <thread>
+#include <mutex>
 
 #include "connection.h"
+#include "request.h"
 #include "system_service.h"
-#include "resources.h"
 
 
 namespace sk2 {
@@ -16,9 +18,11 @@ class ServerService {
     ServerService(int server_port);
     void run();
 
-    private:
     std::unique_ptr<Connection> connection;
     std::shared_ptr<SystemService> system_service;
+
+    private:
+    static void handle_pings(ServerService* server_service);
 };
 
 } // namespace sk2
