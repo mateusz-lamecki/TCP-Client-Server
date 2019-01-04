@@ -1,5 +1,6 @@
 #include "connection.h"
 
+#include <algorithm>
 #include <iostream>
 
 
@@ -14,6 +15,8 @@ std::string read_input(int connection_desc) {
 
     std::string result(buffer);
     delete[] buffer;
+
+    result.erase(std::remove(result.begin(), result.end(), '\n'), result.end());
 
     return result;
 }
