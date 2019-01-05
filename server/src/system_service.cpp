@@ -19,7 +19,10 @@ request::Response SystemService::handle_request(std::string request_raw, int cli
         return request::Response(std::make_unique<request::OtherErrorStatus>(), "Incorrect number of params");
     }
 
+    this->res.mutex_global.lock();
     auto response_of_action = action->handle(request_raw, this->res, client_fd);
+    this->res.mutex_global.unlock();
+
     return response_of_action;
 }
 

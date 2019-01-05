@@ -65,6 +65,7 @@ class Resources {
     std::optional<Topic> get_topic(std::string topic_id);
     bool is_topic(std::string topic_id);
 
+    std::mutex mutex_global;
     std::mutex mutex_ping_user_topic;
     std::map<std::string, std::vector<std::string>>& get_ping_user_topic();
 
