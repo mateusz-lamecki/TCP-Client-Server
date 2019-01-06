@@ -22,7 +22,7 @@ class ServerService {
     std::shared_ptr<SystemService> system_service;
 
     private:
-    static void handle_pings(ServerService* server_service);
+    static void handle_pings(std::shared_ptr<SystemService> system_service);
 };
 
 } // namespace sk2

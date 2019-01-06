@@ -12,14 +12,14 @@ ServerService::ServerService(int server_port) {
 }
 
 void ServerService::run() {
-    std::thread pings_thread(handle_pings, this);
+    std::thread pings_thread(handle_pings, system_service);
     connection->run();
 }
 
-void ServerService::handle_pings(ServerService* server_service) {
+void ServerService::handle_pings(std::shared_ptr<SystemService> system_service) {
     while(true) {
         std::this_thread::sleep_for(std::chrono::milliseconds(200));
-        auto &res = server_service->system_service->get_res();
+        auto &res = system_service->get_res();
 
         res.mutex_ping_user_topic.lock();
 
