@@ -12,8 +12,10 @@ ServerService::ServerService(int server_port) {
 }
 
 void ServerService::run() {
-    std::thread pings_thread(handle_pings, system_service);
     connection->run();
+
+    std::thread pings_thread(handle_pings, system_service);
+    pings_thread.join();
 }
 
 void ServerService::handle_pings(std::shared_ptr<SystemService> system_service) {
