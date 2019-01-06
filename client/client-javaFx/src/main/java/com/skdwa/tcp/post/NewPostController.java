@@ -49,11 +49,13 @@ public class NewPostController {
 				if (postSuccessfull) {
 					exitScene();
 				} else {
-					errorLabel.setText("Problem with connection with server. Please try again.");
+					errorLabel.setText("Problem with server connection. Please try again.");
 					errorLabel.setVisible(true);
 				}
 			} catch (IOException e) {
 				log.error(e.getMessage());
+				errorLabel.setText("Unknown error, please contact with admin");
+				errorLabel.setVisible(true);
 			} catch (ResponseException e) {
 				log.error(e.getMessage());
 				errorLabel.setText(e.getMessage());

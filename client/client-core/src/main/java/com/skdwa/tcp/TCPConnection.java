@@ -1,6 +1,7 @@
 package com.skdwa.tcp;
 
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 
 import javax.net.SocketFactory;
 import java.io.BufferedReader;
@@ -12,6 +13,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+@Slf4j
 public class TCPConnection implements Connection {
     @Getter
     private boolean isConnected = false;
@@ -57,14 +59,14 @@ public class TCPConnection implements Connection {
                 socketOutputStream = null;
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error(e.getMessage());
         }
         try {
             if (!socket.isClosed()) {
                 socket.close();
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error(e.getMessage());
         }
     }
 
@@ -78,7 +80,7 @@ public class TCPConnection implements Connection {
                         appOutputStream.write(message.getBytes());
                     }
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    log.error(e.getMessage());
                 }
             }
         });
@@ -91,7 +93,7 @@ public class TCPConnection implements Connection {
             try {
                 socketOutputStream = socket.getOutputStream();
             } catch (IOException e) {
-                e.printStackTrace();
+                log.warn(e.getMessage());
             }
         }
         executorService.submit(() -> {
@@ -99,7 +101,7 @@ public class TCPConnection implements Connection {
                 socketOutputStream.write(message.getBytes(StandardCharsets.UTF_8));
                 socketOutputStream.flush();
             } catch (IOException e) {
-                e.printStackTrace();
+                log.warn(e.getMessage());
             }
         });
 

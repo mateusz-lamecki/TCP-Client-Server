@@ -5,7 +5,6 @@ import com.skdwa.subscriptions.SubscriptionManager;
 import com.skdwa.tcp.SubscriptionItem;
 import com.skdwa.tcp.validate.FieldsValidator;
 import com.skdwa.tcp.validate.ValidationStatus;
-import javafx.beans.property.SimpleStringProperty;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -47,9 +46,13 @@ public class SubscribeController {
 		ValidationStatus status = FieldsValidator.checkSubscriptionSubject(newSubjectName);
 		if (status.isValid()) {
 			try {
-				manager.subscribeSubject(newSubjectName);
-				subscriptionList.add(new SubscriptionItem(newSubjectName, true));
-				exit();
+				if (manager.subscribeSubject(newSubjectName)) {
+					subscriptionList.add(new SubscriptionItem(newSubjectName, true));
+					exit();
+				} else {
+					errorMessage.setText("Connection problem. Try again later");
+					errorMessage.setVisible(true);
+				}
 			} catch (IOException e) {
 				log.error(e.getMessage());
 			} catch (ResponseException e) {

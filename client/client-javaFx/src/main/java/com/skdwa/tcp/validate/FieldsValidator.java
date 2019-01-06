@@ -1,7 +1,5 @@
 package com.skdwa.tcp.validate;
 
-import com.google.common.base.Strings;
-import com.skdwa.tcp.validate.ValidationStatus;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.regex.Matcher;
@@ -12,8 +10,8 @@ public class FieldsValidator {
     private static final String ILLEGAL_CHARACTERS = "(?=@{3})|(?=\\${3})";
 
     public static ValidationStatus hostValidator(String host) {
-        if (Strings.isNullOrEmpty(host)) {
-            return new ValidationStatus(false, "Cannot be null or empty");
+        if (StringUtils.isBlank(host)) {
+            return new ValidationStatus(false, "Cannot be empty");
         }
         if (host.contains(":")) {
             return new ValidationStatus(false, "Cannot contains \":\"");
@@ -22,8 +20,8 @@ public class FieldsValidator {
     }
 
     public static ValidationStatus portValidator(String port) {
-        if (Strings.isNullOrEmpty(port)) {
-            return new ValidationStatus(false, "Cannot be null or empty");
+        if (StringUtils.isBlank(port)) {
+            return new ValidationStatus(false, "Cannot be empty");
         }
         if (!StringUtils.isNumeric(port)) {
             return new ValidationStatus(false, "Have to be numeric");
@@ -42,8 +40,8 @@ public class FieldsValidator {
      * error message.
      */
     public static ValidationStatus commonValidator(String field) {
-        if (Strings.isNullOrEmpty(field)) {
-            return new ValidationStatus(false, "Cannot be null or empty");
+        if (StringUtils.isBlank(field)) {
+            return new ValidationStatus(false, "Cannot be empty");
         }
         if (!StringUtils.isAlphanumeric(field)) {
             return new ValidationStatus(false, "Have to be alphanumeric");
@@ -52,10 +50,10 @@ public class FieldsValidator {
     }
 
     public static ValidationStatus checkPostMessage(String subject, String content){
-        if(Strings.isNullOrEmpty(subject)){
+        if (StringUtils.isBlank(subject)) {
             return new ValidationStatus(false, "Subject cannot be empty");
         }
-        if(Strings.isNullOrEmpty(content)){
+        if (StringUtils.isBlank(content)) {
             return new ValidationStatus(false, "Content cannot be empty");
         }
         if(isStringContainValues(subject, ILLEGAL_CHARACTERS) || isStringContainValues(content, ILLEGAL_CHARACTERS)) {
@@ -71,7 +69,7 @@ public class FieldsValidator {
     }
 
     public static ValidationStatus checkSubscriptionSubject(String subject){
-        if(Strings.isNullOrEmpty(subject)){
+        if (StringUtils.isBlank(subject)) {
             return new ValidationStatus(false, "Subject cannot be empty");
         }
         if(isStringContainValues(subject, ILLEGAL_CHARACTERS)){

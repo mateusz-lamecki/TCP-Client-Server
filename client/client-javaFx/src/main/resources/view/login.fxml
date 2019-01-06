@@ -4,7 +4,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
-<VBox xmlns:fx="http://javafx.com/fxml/1" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/10.0.1">
+<VBox xmlns:fx="http://javafx.com/fxml/1" prefHeight="400.0" prefWidth="712.0" xmlns="http://javafx.com/javafx/10.0.1">
    <children>
       <MenuBar>
         <menus>
@@ -20,7 +20,7 @@
           </Menu>
         </menus>
       </MenuBar>
-       <VBox alignment="CENTER" prefHeight="332.0" prefWidth="600.0" VBox.vgrow="ALWAYS">
+       <VBox alignment="CENTER" prefHeight="375.0" prefWidth="809.0" VBox.vgrow="ALWAYS">
          <children>
             <Label text="Connect to TCP server" textAlignment="CENTER" wrapText="true">
                <padding>
@@ -29,92 +29,106 @@
                <font>
                   <Font size="22.0" />
                </font></Label>
-             <GridPane prefHeight="199.0" prefWidth="440.0">
-              <columnConstraints>
-                  <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="112.0" minWidth="10.0"
-                                     prefWidth="80.0"/>
-                  <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="238.0" minWidth="10.0"
-                                     prefWidth="179.0"/>
-                  <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="135.0" minWidth="10.0"
-                                     prefWidth="135.0"/>
-              </columnConstraints>
-              <rowConstraints>
-                <RowConstraints minHeight="10.0" prefHeight="30.0" />
-                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-              </rowConstraints>
-               <children>
-                  <Label text="Host" textAlignment="CENTER" />
-                  <Label text="Port" GridPane.rowIndex="1" />
-                  <Label text="Login" GridPane.rowIndex="2" />
-                  <Label text="Password" GridPane.rowIndex="3" />
-                   <TextField fx:id="portFX" promptText="3552" text="3552" GridPane.columnIndex="1"
-                              GridPane.rowIndex="1"/>
-                   <TextField fx:id="hostFX" promptText="127.0.0.1" text="localhost" GridPane.columnIndex="1"/>
-                   <TextField fx:id="loginFX" prefWidth="218.0" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
-                  <PasswordField fx:id="passwordFX" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                  <Button mnemonicParsing="false" onAction="#register" text="Register" GridPane.rowIndex="4" />
-                  <Button mnemonicParsing="false" onAction="#login" text="Login" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-                   <AnchorPane GridPane.columnIndex="2" GridPane.hgrow="ALWAYS">
-                       <children>
-                           <Label fx:id="hostError" alignment="CENTER" contentDisplay="CENTER" prefHeight="25.0"
-                                  prefWidth="86.0" text="hostError" textAlignment="CENTER" textFill="#d12906"
-                                  visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
-                                  AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                               <font>
-                                   <Font name="System Bold" size="12.0"/>
-                               </font>
-                           </Label>
-                       </children>
-                   </AnchorPane>
-                   <AnchorPane GridPane.columnIndex="2" GridPane.rowIndex="1">
-                       <children>
-                           <Label fx:id="portError" alignment="CENTER" prefHeight="25.0" prefWidth="86.0"
-                                  text="hostError" textFill="#d12906" visible="false" AnchorPane.bottomAnchor="0.0"
-                                  AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                               <font>
-                                   <Font name="System Bold" size="12.0"/>
-                               </font>
-                           </Label>
-                       </children>
-                   </AnchorPane>
-                   <AnchorPane GridPane.columnIndex="2" GridPane.rowIndex="2">
-                       <children>
-                           <Label fx:id="loginError" alignment="CENTER" prefHeight="25.0" prefWidth="86.0"
-                                  text="hostError" textFill="#d12906" visible="false" AnchorPane.bottomAnchor="0.0"
-                                  AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                               <font>
-                                   <Font name="System Bold" size="12.0"/>
-                               </font>
-                           </Label>
-                       </children>
-                   </AnchorPane>
-                   <AnchorPane GridPane.columnIndex="2" GridPane.rowIndex="3">
-                       <children>
-                           <Label fx:id="passwordError" alignment="CENTER" prefHeight="25.0" prefWidth="86.0"
-                                  text="hostError" textFill="#d12906" visible="false" AnchorPane.bottomAnchor="0.0"
-                                  AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                               <font>
-                                   <Font name="System Bold" size="12.0"/>
-                               </font>
-                           </Label>
-                       </children>
-                   </AnchorPane>
-                   <AnchorPane GridPane.columnIndex="2" GridPane.rowIndex="4">
-                       <children>
-                           <Label fx:id="infoFx" alignment="CENTER" text="Info" textFill="#03a108" visible="false"
-                                  AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
-                                  AnchorPane.topAnchor="0.0">
-                               <font>
-                                   <Font name="System Bold" size="16.0"/>
-                               </font>
-                           </Label>
-                       </children>
-                   </AnchorPane>
-               </children>
-            </GridPane>
+             <AnchorPane prefHeight="201.0" prefWidth="610.0">
+                 <children>
+                     <GridPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="201.0"
+                               prefWidth="639.0">
+                         <columnConstraints>
+                             <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="124.0" minWidth="10.0"
+                                                prefWidth="124.0"/>
+                             <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="442.0" minWidth="0.0"
+                                                prefWidth="190.0"/>
+                             <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="538.0" minWidth="10.0"
+                                                prefWidth="377.0"/>
+                         </columnConstraints>
+                         <rowConstraints>
+                             <RowConstraints minHeight="10.0" prefHeight="30.0"/>
+                             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                         </rowConstraints>
+                         <children>
+                             <Label text="Host" textAlignment="CENTER"/>
+                             <Label text="Port" GridPane.rowIndex="1"/>
+                             <Label text="Login" GridPane.rowIndex="2"/>
+                             <Label text="Password" GridPane.rowIndex="3"/>
+                             <TextField fx:id="portFX" promptText="3552" text="3552" GridPane.columnIndex="1"
+                                        GridPane.rowIndex="1"/>
+                             <TextField fx:id="hostFX" prefHeight="30.0" prefWidth="129.0" promptText="127.0.0.1"
+                                        text="localhost" GridPane.columnIndex="1"/>
+                             <TextField fx:id="loginFX" prefWidth="218.0" GridPane.columnIndex="1"
+                                        GridPane.rowIndex="2"/>
+                             <PasswordField fx:id="passwordFX" GridPane.columnIndex="1" GridPane.rowIndex="3"/>
+                             <Button mnemonicParsing="false" onAction="#register" text="Register"
+                                     GridPane.rowIndex="4"/>
+                             <Button mnemonicParsing="false" onAction="#login" text="Login" GridPane.columnIndex="1"
+                                     GridPane.rowIndex="4"/>
+                             <AnchorPane prefHeight="30.0" prefWidth="203.0" GridPane.columnIndex="2"
+                                         GridPane.hgrow="ALWAYS">
+                                 <children>
+                                     <Label fx:id="hostError" contentDisplay="CENTER" prefHeight="25.0" prefWidth="86.0"
+                                            text="hostError" textAlignment="CENTER" textFill="#d12906" visible="false"
+                                            AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
+                                            AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                         <font>
+                                             <Font name="System Bold" size="9.0"/>
+                                         </font>
+                                     </Label>
+                                 </children>
+                             </AnchorPane>
+                             <AnchorPane prefHeight="42.0" prefWidth="179.0" GridPane.columnIndex="2"
+                                         GridPane.rowIndex="1">
+                                 <children>
+                                     <Label fx:id="portError" prefHeight="25.0" prefWidth="86.0" text="hostError"
+                                            textFill="#d12906" visible="false" AnchorPane.bottomAnchor="0.0"
+                                            AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
+                                            AnchorPane.topAnchor="0.0">
+                                         <font>
+                                             <Font name="System Bold" size="9.0"/>
+                                         </font>
+                                     </Label>
+                                 </children>
+                             </AnchorPane>
+                             <AnchorPane GridPane.columnIndex="2" GridPane.rowIndex="2">
+                                 <children>
+                                     <Label fx:id="loginError" prefHeight="25.0" prefWidth="86.0" text="hostError"
+                                            textFill="#d12906" visible="false" AnchorPane.bottomAnchor="0.0"
+                                            AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
+                                            AnchorPane.topAnchor="0.0">
+                                         <font>
+                                             <Font name="System Bold" size="9.0"/>
+                                         </font>
+                                     </Label>
+                                 </children>
+                             </AnchorPane>
+                             <AnchorPane GridPane.columnIndex="2" GridPane.rowIndex="3">
+                                 <children>
+                                     <Label fx:id="passwordError" prefHeight="25.0" prefWidth="86.0" text="hostError"
+                                            textFill="#d12906" visible="false" AnchorPane.bottomAnchor="0.0"
+                                            AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
+                                            AnchorPane.topAnchor="0.0">
+                                         <font>
+                                             <Font name="System Bold" size="9.0"/>
+                                         </font>
+                                     </Label>
+                                 </children>
+                             </AnchorPane>
+                             <AnchorPane GridPane.columnIndex="2" GridPane.rowIndex="4">
+                                 <children>
+                                     <Label fx:id="infoFx" text="Info" textFill="#03a108" visible="false"
+                                            AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
+                                            AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                         <font>
+                                             <Font name="System Bold" size="9.0"/>
+                                         </font>
+                                     </Label>
+                                 </children>
+                             </AnchorPane>
+                         </children>
+                     </GridPane>
+                 </children>
+             </AnchorPane>
          </children>
          <padding>
             <Insets left="100.0" right="100.0" />
