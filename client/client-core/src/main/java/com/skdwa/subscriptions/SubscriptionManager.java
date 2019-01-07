@@ -1,6 +1,8 @@
 package com.skdwa.subscriptions;
 
 import com.google.common.base.Strings;
+import com.skdwa.subscriptions.observer.MessageObservable;
+import com.skdwa.subscriptions.observer.Observer;
 import com.skdwa.tcp.Connection;
 import com.skdwa.tcp.TCPConnection;
 import lombok.Getter;
@@ -27,16 +29,16 @@ public class SubscriptionManager {
 	 * @return true if register successful, false otherwise
 	 * @throws IOException when connection to server occurs
 	 */
-	public boolean signUp(String login, String password) throws IOException, RegisterLoginTakenException {
+	public boolean signUp(String login, String password) throws IOException, LoginIsAlreadyTakenException {
 		connectIfNotConnected();
 		connection.write("REGISTER@@@" + login + "@@@" + password);
-		Response response = waitForResponse("OK", "LOGIN_TAKEN", 2);
+		Response response = waitForResponse("OK", "LOGIN_TAKEN");
 		if (response == null) {
 			log.info("{} login failed, did not receive response from the server", login);
 			return false;
 		}
 		if (!response.isOk()) {
-			throw new RegisterLoginTakenException("login" + " is taken");
+			throw new LoginIsAlreadyTakenException("login" + " is taken");
 		} else {
 			loggedUser = new LoggedUser(login, response.getMessage());
 			return true;
@@ -47,7 +49,7 @@ public class SubscriptionManager {
 		connectIfNotConnected();
 		connection.write("LOGIN@@@" + login + "@@@" + password);
 		byte i = 0;
-		Response response = waitForResponse("OK", "INVALID_PASSWORD", 2);
+		Response response = waitForResponse("OK", "INVALID_PASSWORD");
 		if (response == null) {
 			log.info("{} login failed, did not receive response from the server", login);
 			return false;
@@ -60,13 +62,13 @@ public class SubscriptionManager {
 		}
 	}
 
-	public boolean subscribeSubject(String subjectName) throws IOException, ResponseException { //todo test it and make UI
+	public boolean subscribeSubject(String subjectName) throws IOException, ResponseException {
 		if (!isUserLogged()) {
 			throw new IllegalStateException("User is not logged");
 		}
 		connectIfNotConnected();
 		connection.write("SUBSCRIBE@@@" + loggedUser.getToken() + "@@@" + subjectName);
-		Response response = waitForResponse(Collections.singletonList("OK"), new ArrayList<>(Arrays.asList("INVALID_TOKEN", "INVALID_TOPIC")), 2);
+		Response response = waitForResponse(Collections.singletonList("OK"), new ArrayList<>(Arrays.asList("INVALID_TOKEN", "INVALID_TOPIC")));
 		if (response == null) {
 			log.info("Did not receive response from the server");
 			return false;
@@ -78,13 +80,13 @@ public class SubscriptionManager {
 		}
 	}
 
-	public boolean unsubscribeSubject(String subjectName) throws IOException, ResponseException { //todo test it and make UI
+	public boolean unsubscribeSubject(String subjectName) throws IOException, ResponseException {
 		if (!isUserLogged()) {
 			throw new IllegalStateException("User is not logged");
 		}
 		connectIfNotConnected();
 		connection.write("UNSUBSCRIBE@@@" + loggedUser.getToken() + "@@@" + subjectName);
-		Response response = waitForResponse(Collections.singletonList("OK"), new ArrayList<>(Arrays.asList("INVALID_TOKEN", "INVALID_TOPIC")), 2);
+		Response response = waitForResponse(Collections.singletonList("OK"), new ArrayList<>(Arrays.asList("INVALID_TOKEN", "INVALID_TOPIC")));
 		if (response == null) {
 			log.info("Did not receive response from the server");
 			return false;
@@ -96,13 +98,13 @@ public class SubscriptionManager {
 		}
 	}
 
-	public boolean publish(String subject, String content) throws IOException, ResponseException { //todo: test it
+	public boolean publish(String subject, String content) throws IOException, ResponseException {
 		if(!isUserLogged()){
 			throw new IllegalStateException("User is not logged");
 		}
 		connectIfNotConnected();
-		connection.write("PUBLISH " + loggedUser.getToken() + "@@@" + subject + "@@@" + content);
-		Response response = waitForResponse("OK", "INVALID_TOKEN", 2);
+		connection.write("PUBLISH@@@" + loggedUser.getToken() + "@@@" + subject + "@@@" + content);
+		Response response = waitForResponse("OK", "INVALID_TOKEN");
 		if (response == null) {
 			log.info("Did not receive response from the server");
 			return false;
@@ -120,7 +122,7 @@ public class SubscriptionManager {
 		}
 		connectIfNotConnected();
 		connection.write("READ_TOPICS@@@" + loggedUser.getToken());
-		Response response = waitForResponse("OK", "INVALID_TOKEN", -1);
+		Response response = waitForResponse("OK", "INVALID_TOKEN");
 		if (response == null) {
 			log.info("Did not receive response from the server");
 			return null;
@@ -128,7 +130,10 @@ public class SubscriptionManager {
 		if (!response.isOk()) {
 			throw new ResponseException("Invalid token");
 		} else {
-			String[] subjects = response.getMessage().split("\\$\\$\\$");
+			if(response.getMessage().length() == 0){
+				return new ArrayList<>();
+			}
+			String[] subjects = response.getMessage().split("@{3}");
 			return new ArrayList<>(Arrays.asList(subjects));
 		}
 	}
@@ -139,7 +144,7 @@ public class SubscriptionManager {
 		}
 		connectIfNotConnected();
 		connection.write("READ_MESSAGES@@@" + subject);
-		Response response = waitForResponse("OK", "INVALID_TOPIC", -1);
+		Response response = waitForResponse("OK", "INVALID_TOPIC");
 		if (response == null) {
 			log.info("Did not receive response from the server");
 			return null;
@@ -161,17 +166,29 @@ public class SubscriptionManager {
 		this.connection = new TCPConnection(host, port, outputStream);
 	}
 
+	public void addObserverWithMessage(Observer observer, String message){
+		MessageObservable observable = (MessageObservable) this.outputStream;
+		observable.addObserverToMessage(observer, message);
+	}
+
+	private Response waitForResponse(String okMessage, String wrongMessage){
+		return waitForResponse(okMessage, wrongMessage, -1);
+	}
+
 	private Response waitForResponse(String okMessage, String wrongMessage, int numberOfResponseMessages) {
 		return waitForResponse(new ArrayList<>(Collections.singletonList(okMessage)), new ArrayList<>(Collections.singletonList(wrongMessage)), numberOfResponseMessages);
 	}
 
+	private Response waitForResponse(List<String> okMessages, List<String> wrongMessages){
+		return waitForResponse(okMessages, wrongMessages, -1);
+	}
 	private Response waitForResponse(List<String> okMessages, List<String> wrongMessages, int numberOfResponseMessages) {
 		int i = 0;
 		while (i++ < 10) {
 			for (int l = 0; l < messages.size(); l++) {
 				String message = messages.get(l);
 				if (okMessages.stream().anyMatch(message::contains)) {
-					String[] splitted = message.split("@@@");
+					String[] splitted = message.split("@@@",2);
 					if (numberOfResponseMessages > 0 && splitted.length != numberOfResponseMessages) {
 						throw new IllegalStateException("Cannot find token in server response");
 					}
@@ -190,7 +207,7 @@ public class SubscriptionManager {
 				}
 			}
 			try {
-				Thread.sleep(200);
+				Thread.sleep(300);
 			} catch (InterruptedException e) {
 				log.error(e.getMessage());
 			}

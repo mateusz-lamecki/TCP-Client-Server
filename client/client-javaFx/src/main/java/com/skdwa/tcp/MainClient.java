@@ -17,11 +17,10 @@ public class MainClient extends Application {
 
     @Override
     public void start(Stage primaryStage) throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/sample.fxml"));
-        //FXMLLoader loader = new FXMLLoader(getClass().getResource("/login.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/main.fxml"));
         Parent root = loader.load();
         primaryStage.setTitle("TCP Client Subscribe");
-        Scene scene = new Scene(root, 300, 275);
+        Scene scene = new Scene(root, 850, 750);
         primaryStage.setMinWidth(850);
         primaryStage.setMinHeight(750);
 

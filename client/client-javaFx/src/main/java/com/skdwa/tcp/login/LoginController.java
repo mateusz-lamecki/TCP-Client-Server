@@ -1,9 +1,12 @@
-package com.skdwa.tcp.signpanel;
+package com.skdwa.tcp.login;
 
 import com.google.common.base.Strings;
-import com.skdwa.subscriptions.RegisterLoginTakenException;
+import com.skdwa.subscriptions.LoginIsAlreadyTakenException;
 import com.skdwa.subscriptions.SignInException;
 import com.skdwa.subscriptions.SubscriptionManager;
+import com.skdwa.tcp.InvalidFieldValueException;
+import com.skdwa.tcp.validate.FieldsValidator;
+import com.skdwa.tcp.validate.ValidationStatus;
 import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
@@ -60,16 +63,15 @@ public class LoginController {
             if (signInSuccessful) {
                 exitScene();
             } else {
-                infoFx.setText("Login unsuccessful\nTry again");
-                infoFx.setTextFill(Color.RED);
-                infoFx.setVisible(true);
+                showInfo("Login unsuccessful\nTry again", true);
             }
         } catch (SignInException e) {
             loginError.setText("Login/Password incorrect");
             loginError.setVisible(true);
         } catch (InvalidFieldValueException e) {
-            e.printStackTrace();
+            showInfo(e.getMessage(), true);
         } catch (IOException e) {
+            showInfo(e.getMessage(), true);
             log.error(e.getLocalizedMessage());
         }
     }
@@ -85,20 +87,18 @@ public class LoginController {
             }
             boolean signUpSuccessful = subscriptionManager.signUp(login, password);
             if (signUpSuccessful) {
-                infoFx.setText("Register successful");
-                infoFx.setTextFill(Color.GREEN);
+                exitScene();
             } else {
-                infoFx.setText("Register unsuccessful");
-                infoFx.setTextFill(Color.RED);
+                showInfo("Register unsuccessful", true);
             }
-            infoFx.setVisible(true);
-        } catch (RegisterLoginTakenException e) {
+        } catch (LoginIsAlreadyTakenException e) {
             loginError.setText("\'" + login + "\' is already taken");
             loginError.setVisible(true);
         } catch (InvalidFieldValueException e) {
-            e.printStackTrace();
+            showInfo(e.getMessage(), true);
         } catch (IOException e) {
             log.error(e.getLocalizedMessage());
+            showInfo("Error, please contact admin", true);
         }
     }
 
@@ -182,6 +182,16 @@ public class LoginController {
     private void exitScene() {
         Stage stage = (Stage) loginFX.getScene().getWindow();
         stage.close();
+    }
+
+    private void showInfo(String message, boolean isError) {
+        infoFx.setText(message);
+        if (isError) {
+            infoFx.setTextFill(Color.RED);
+        } else {
+            infoFx.setTextFill(Color.BLACK);
+        }
+        infoFx.setVisible(true);
     }
 
 }
