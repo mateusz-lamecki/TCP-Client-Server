@@ -35,7 +35,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>fully.qualified.MainClass</mainClass>
+                            <mainClass>com.skdwa.tcp.MainClient</mainClass>
                         </manifest>
                     </archive>
                     <descriptorRefs>

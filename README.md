@@ -12,4 +12,10 @@ make
 ```
 
 ##### Klient
-Klient zostal napisany w Java.
+Klient został napisany w Javie.
+
+```
+cd client
+mvn clean install
+java -jar -Dapple.awt.UIElement="true" client-javaFx/target/client-javaFx-1.0-SNAPSHOT-jar-with-dependencies.jar
+```
