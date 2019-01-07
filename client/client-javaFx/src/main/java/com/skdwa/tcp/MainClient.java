@@ -6,31 +6,34 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import lombok.extern.slf4j.Slf4j;
 
-import java.io.IOException;
-
-
+@Slf4j
 public class MainClient extends Application {
     public static void main(String[] args) {
         launch(args);
     }
 
     @Override
-    public void start(Stage primaryStage) throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/main.fxml"));
-        Parent root = loader.load();
-        primaryStage.setTitle("TCP Client Subscribe");
-        Scene scene = new Scene(root, 850, 750);
-        primaryStage.setMinWidth(850);
-        primaryStage.setMinHeight(750);
+    public void start(Stage primaryStage) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/main.fxml"));
+            Parent root = loader.load();
+            primaryStage.setTitle("TCP Client Subscribe");
+            Scene scene = new Scene(root, 850, 750);
+            primaryStage.setMinWidth(850);
+            primaryStage.setMinHeight(750);
 
-        primaryStage.setOnCloseRequest(t -> {
-            Platform.exit();
-            System.exit(0);
-        });
+            primaryStage.setOnCloseRequest(t -> {
+                Platform.exit();
+                System.exit(0);
+            });
 
-        primaryStage.setScene(scene);
+            primaryStage.setScene(scene);
 
-        primaryStage.show();
+            primaryStage.show();
+        } catch (Throwable e) {
+            log.info("App terminated");
+        }
     }
 }

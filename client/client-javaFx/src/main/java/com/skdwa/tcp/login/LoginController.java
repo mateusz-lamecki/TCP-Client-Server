@@ -5,6 +5,7 @@ import com.skdwa.subscriptions.LoginIsAlreadyTakenException;
 import com.skdwa.subscriptions.SignInException;
 import com.skdwa.subscriptions.SubscriptionManager;
 import com.skdwa.tcp.InvalidFieldValueException;
+import com.skdwa.tcp.Messages;
 import com.skdwa.tcp.validate.FieldsValidator;
 import com.skdwa.tcp.validate.ValidationStatus;
 import javafx.event.Event;
@@ -71,7 +72,7 @@ public class LoginController {
         } catch (InvalidFieldValueException e) {
             showInfo(e.getMessage(), true);
         } catch (IOException e) {
-            showInfo(e.getMessage(), true);
+            showInfo(Messages.CONNECTION_ERROR, true);
             log.error(e.getLocalizedMessage());
         }
     }
@@ -98,7 +99,7 @@ public class LoginController {
             showInfo(e.getMessage(), true);
         } catch (IOException e) {
             log.error(e.getLocalizedMessage());
-            showInfo("Error, please contact admin", true);
+            showInfo(Messages.CONNECTION_ERROR, true);
         }
     }
 

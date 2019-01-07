@@ -11,17 +11,14 @@ import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ObservableValueBase;
 import javafx.collections.FXCollections;
-import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -34,10 +31,12 @@ import java.util.stream.Collectors;
 
 @Slf4j
 public class ClientController implements Observer {
+
     private SubscriptionManager subscriptionManager = new SubscriptionManager();
 
     private Connection connection = null;
     private boolean isConnected = false;
+    private SubscriptionItem currentDisplayedItem = null;
 
     private static final ImageView IMAGE_UPDATED = new ImageView("icons/new.png");
 
@@ -97,8 +96,12 @@ public class ClientController implements Observer {
 					.map(e -> new SubscriptionItem(e, false))
 					.collect(Collectors.toList()));
             mainContainer.resize(680, 600);
-        } catch (IOException | ResponseException e) {
-            e.printStackTrace();
+        } catch (IOException e) {
+            log.error(e.getMessage());
+            logOnScene(Messages.CONNECTION_ERROR, 10);
+        } catch (ResponseException e) {
+            log.warn(e.getMessage());
+            logOnScene(e.getMessage(), 10);
         } finally {
             if (!Strings.isNullOrEmpty(subscriptionManager.getLoggedUser().getToken())) {
                 setSceneVisibility(true);
@@ -115,6 +118,7 @@ public class ClientController implements Observer {
                 subscribedSubjectsData.remove(item);
             } catch (IOException e) {
                 log.error(e.getMessage());
+                logOnScene(Messages.CONNECTION_ERROR, 10);
             } catch (ResponseException e) {
                 log.error(e.getMessage());
                 logOnScene(e.getMessage(), 10);
@@ -156,22 +160,26 @@ public class ClientController implements Observer {
         if(items.size() == 1){
             log.debug("Subscription selected");
             try {
-                List<String> messages = subscriptionManager.getAllMessages(items.get(0).getSubject().getValue());
-                articlesListFX.getItems().clear();
-                articlesListFX.getItems().addAll(messages);
-                for (SubscriptionItem item : subscribedSubjectsData) {
-                    if(item.equals(items.get(0))){
-                        item.setIsUpdated(new SimpleBooleanProperty(false));
-                        int index = subscribedSubjectsData.indexOf(item);
-                        subscribedSubjectsData.set(index, item);
-                    }
-                }
-//                subscribedSubjectsData.remove(items.get(0));
-//                subscribedSubjectsData.add(new SubscriptionItem(items.get(0).getSubject(), items.get(0).getIsUpdated()));
+                showAllMessagesOnMessagePanel(items.get(0));
+                currentDisplayedItem = items.get(0);
             } catch (IOException e) {
                 log.error(e.getMessage());
+                logOnScene(Messages.CONNECTION_ERROR, 10);
             } catch (ResponseException e) {
                 logOnScene(e.getMessage());
+            }
+        }
+    }
+
+    private void showAllMessagesOnMessagePanel(SubscriptionItem itemToDisplay) throws IOException, ResponseException {
+        List<String> messages = subscriptionManager.getAllMessages(itemToDisplay.getSubject().getValue());
+        articlesListFX.getItems().clear();
+        articlesListFX.getItems().addAll(messages);
+        for (SubscriptionItem item : subscribedSubjectsData) {
+            if (item.equals(itemToDisplay)) {
+                item.setIsUpdated(new SimpleBooleanProperty(false));
+                int index = subscribedSubjectsData.indexOf(item);
+                subscribedSubjectsData.set(index, item);
             }
         }
     }
@@ -210,19 +218,33 @@ public class ClientController implements Observer {
         primaryStage.showAndWait();
     }
 
-	@Override
-	public void update(String message, String content) {
+    @Override
+    public void update(String message, String content) {
         log.info("Received update message", message, content);
-        if(message.equalsIgnoreCase("PING")){
-            for(SubscriptionItem item :subscribedSubjectsData){
-                if(item.getSubject().getValue().equalsIgnoreCase(content)){
-                    item.setIsUpdated(new SimpleBooleanProperty(true));
-                    int index = subscribedSubjectsData.indexOf(item);
-                    subscribedSubjectsData.set(index, item);
-                    log.debug("Updated list on {} index with {} value", index, item.getSubject().getValue());
-                    break;
+        if (message.equalsIgnoreCase("PING")) {
+            if (currentDisplayedItem != null && currentDisplayedItem.getSubject().getValue().equalsIgnoreCase(content)) {
+                Platform.runLater(() -> {
+                    try {
+                        showAllMessagesOnMessagePanel(currentDisplayedItem);
+                    } catch (IOException e) {
+                        log.error(e.getMessage());
+                        logOnScene(Messages.CONNECTION_ERROR, 10);
+                    } catch (ResponseException e) {
+                        logOnScene(e.getMessage());
+                        log.error(e.getMessage());
+                    }
+                });
+            } else {
+                for (SubscriptionItem item : subscribedSubjectsData) {
+                    if (item.getSubject().getValue().equalsIgnoreCase(content)) {
+                        item.setIsUpdated(new SimpleBooleanProperty(true));
+                        int index = subscribedSubjectsData.indexOf(item);
+                        subscribedSubjectsData.set(index, item);
+                        log.debug("Updated list on {} index with {} value", index, item.getSubject().getValue());
+                        break;
+                    }
                 }
             }
         }
-	}
+    }
 }

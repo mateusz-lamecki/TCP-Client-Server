@@ -2,6 +2,7 @@ package com.skdwa.tcp.subscribe;
 
 import com.skdwa.subscriptions.ResponseException;
 import com.skdwa.subscriptions.SubscriptionManager;
+import com.skdwa.tcp.Messages;
 import com.skdwa.tcp.SubscriptionItem;
 import com.skdwa.tcp.validate.FieldsValidator;
 import com.skdwa.tcp.validate.ValidationStatus;
@@ -50,7 +51,7 @@ public class SubscribeController {
 					subscriptionList.add(new SubscriptionItem(newSubjectName, true));
 					exit();
 				} else {
-					errorMessage.setText("Connection problem. Try again later");
+					errorMessage.setText(Messages.CONNECTION_ERROR);
 					errorMessage.setVisible(true);
 				}
 			} catch (IOException e) {
@@ -61,7 +62,7 @@ public class SubscribeController {
 					errorMessage.setText("The topic as not created yet");
 					errorMessage.setVisible(true);
 				}else {
-					errorMessage.setText("Unknown problem, try later");
+					errorMessage.setText(Messages.UNKNOWN_ERROR);
 					errorMessage.setVisible(true);
 				}
 			}
