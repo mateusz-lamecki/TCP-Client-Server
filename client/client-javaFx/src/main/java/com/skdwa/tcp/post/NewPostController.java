@@ -2,6 +2,7 @@ package com.skdwa.tcp.post;
 
 import com.skdwa.subscriptions.ResponseException;
 import com.skdwa.subscriptions.SubscriptionManager;
+import com.skdwa.tcp.Messages;
 import com.skdwa.tcp.validate.FieldsValidator;
 import com.skdwa.tcp.validate.ValidationStatus;
 import javafx.fxml.FXML;
@@ -49,12 +50,12 @@ public class NewPostController {
 				if (postSuccessfull) {
 					exitScene();
 				} else {
-					errorLabel.setText("Problem with server connection. Please try again.");
+					errorLabel.setText(Messages.CONNECTION_ERROR);
 					errorLabel.setVisible(true);
 				}
 			} catch (IOException e) {
 				log.error(e.getMessage());
-				errorLabel.setText("Unknown error, please contact with admin");
+				errorLabel.setText(Messages.CONNECTION_ERROR);
 				errorLabel.setVisible(true);
 			} catch (ResponseException e) {
 				log.error(e.getMessage());

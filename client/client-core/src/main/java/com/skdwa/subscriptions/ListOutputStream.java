@@ -43,7 +43,6 @@ public class ListOutputStream extends OutputStream implements MessageObservable 
 		String[] splitted = message.split("@{3}", 2);
 		observersWithMessages.forEach((key, value) -> {
 			if (value.contains(splitted[0])) {
-				log.info("PING UPDATE IN STREAM!!!");
 				if (splitted.length == 1) {
 					key.update(splitted[0], "");
 				} else {
